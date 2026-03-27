@@ -268,23 +268,6 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(c
 .tts-loading{animation:tts-pulse .8s infinite}
 
 /* ===== SCRIPT PANEL ===== */
-.script-wrap{grid-column:1/-1;margin-top:4px;border-top:1px solid #fce7ef;padding-top:12px}
-.script-toggle-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;border:1.5px solid var(--rose);background:transparent;color:var(--rose);cursor:pointer;font-size:12px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
-.script-toggle-btn:hover{background:var(--blush)}
-.script-gen-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;border:none;background:linear-gradient(90deg,var(--mauve),#8b5cf6);color:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:'Noto Sans KR',sans-serif;transition:all .2s;margin-left:6px}
-.script-gen-btn:hover{opacity:.85;transform:translateY(-1px)}
-.script-gen-btn:disabled{opacity:.5;cursor:not-allowed}
-.script-panel{display:none;margin-top:12px;background:linear-gradient(135deg,#fdf4ff,#fff0f5);border-radius:14px;border:1px solid #f0d5ea;padding:18px;position:relative}
-.script-panel.open{display:block;animation:fadeIn .25s}
-.script-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.script-header h4{font-family:'Playfair Display',serif;font-size:15px;color:var(--rose-dark);display:flex;align-items:center;gap:6px}
-.script-copy-btn{padding:4px 10px;border-radius:99px;border:1px solid #f0d5ea;background:#fff;color:var(--text-light);cursor:pointer;font-size:11px;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
-.script-copy-btn:hover{color:var(--rose);border-color:var(--rose)}
-.script-body{font-size:13px;line-height:2;color:var(--text);white-space:pre-wrap;max-height:420px;overflow-y:auto;padding-right:4px}
-.script-body h5{font-family:'Playfair Display',serif;font-size:14px;color:var(--rose);margin:12px 0 4px;font-weight:700}
-.script-body .s-point{display:flex;gap:8px;padding:4px 0;color:var(--text-light);font-size:12px}
-.script-body .s-point::before{content:'✦';color:var(--rose);flex-shrink:0}
-.script-status{font-size:11px;color:var(--text-light);margin-top:6px;min-height:14px}
 
 /* AI 퀴즈 생성 */
 .ai-quiz-section{background:linear-gradient(135deg,#fff0f5,#fce7ef);border-radius:16px;padding:18px;margin-bottom:20px;border:1.5px dashed #f4c0d4}
@@ -985,7 +968,6 @@ let state = {
   reviewSchedule: {},
   masteredWrong: {},
   generatedQuizzes: [],
-  scripts: {}
 };
 
 function loadState() {
@@ -1372,7 +1354,7 @@ async function generateAIQuiz() {
   }).join('\n');
   const prompt = `다음 마케팅 커리큘럼 내용을 바탕으로 4지선다 퀴즈 ${count}개를 만들어줘.\n\n커리큘럼 (Phase ${phase}):\n${lessonTexts}\n\n반드시 아래 JSON 형식으로만 답해줘 (다른 텍스트 없이):\n[{"q":"질문","options":["선택지1","선택지2","선택지3","선택지4"],"answer":정답인덱스(0~3),"exp":"해설"},...]`;
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.apiKey}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
     });
@@ -1568,6 +1550,8 @@ async function sendChat() {
   input.value = '';
   appendMsg('user', msg);
   chatHistory.push({ role: 'user', parts: [{ text: msg }] });
+  // 최근 20개 메시지만 유지 (오래된 것 삭제)
+  if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
   await callGemini(msg);
 }
 
@@ -1598,11 +1582,18 @@ async function callGemini(userMsg) {
       system_instruction: { parts: [{ text: systemMsg }] },
       contents: chatHistory
     };
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.apiKey}`, {
+    const fetchGemini = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
+    let res = await fetchGemini();
+    // 429면 5초 기다렸다가 1회 재시도
+    if (res.status === 429) {
+      appendMsg('ai', '⏳ 잠깐! 요청이 많아서 5초 후 자동으로 다시 시도할게~');
+      await new Promise(r => setTimeout(r, 5000));
+      res = await fetchGemini();
+    }
     hideTyping();
     if (!res.ok) {
       const err = await res.json();
@@ -1611,14 +1602,18 @@ async function callGemini(userMsg) {
         400: '요청 형식이 잘못됐어 😅 다시 시도해봐!',
         401: 'API 키가 유효하지 않아 🔑 키를 다시 확인해봐!',
         403: 'API 접근이 거부됐어 🚫 키 권한을 확인해봐!',
-        429: 'API 요청이 너무 많아 ⏳ 잠깐 기다렸다 다시 물어봐!',
+        429: 'API 요청이 너무 많아 ⏳ 1분 후에 다시 물어봐!',
         500: 'Gemini 서버에 문제가 생겼어 😢 잠시 후 다시 시도해봐!'
       };
       appendMsg('ai', msgs[code] || `오류가 났어 (${code}) 😢 잠시 후 다시 시도해봐!`);
       return;
     }
     const data = await res.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '답변을 가져오지 못했어 😢';
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) {
+      appendMsg('ai', '응답을 받지 못했어 😢 다시 한번 물어봐줘!');
+      return;
+    }
     chatHistory.push({ role: 'model', parts: [{ text: reply }] });
     appendMsg('ai', reply);
   } catch(e) {
@@ -1735,22 +1730,6 @@ async function buildAudio() {
           </div>
           <div class="media-player-wrap" id="video-player-${ch.id}" style="display:none"></div>
         </div>
-        <div class="script-wrap">
-          <button class="script-toggle-btn" id="script-toggle-${ch.id}" onclick="toggleScript('${ch.id}')">📄 학습 대본 보기</button>
-          <button class="script-gen-btn" id="script-gen-${ch.id}" onclick="generateScript('${ch.id}')">✨ AI 대본 생성</button>
-          <div class="script-status" id="script-status-${ch.id}"></div>
-          <div class="script-panel" id="script-panel-${ch.id}">
-            <div class="script-header">
-              <h4>📄 ${ch.title} 학습 대본</h4>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <button class="script-copy-btn" id="speak-btn-${ch.id}" onclick="speakScript('${ch.id}')">🔊 대본 읽기</button>
-                <button class="script-copy-btn" onclick="stopSpeech()" style="display:none" id="stop-btn-${ch.id}">⏹ 정지</button>
-                <button class="script-copy-btn" onclick="copyScript('${ch.id}')">📋 복사</button>
-              </div>
-            </div>
-            <div class="script-body" id="script-body-${ch.id}">대본이 없어요. ✨ AI 대본 생성 버튼을 눌러주세요!</div>
-          </div>
-        </div>
       </div>`;
     list.appendChild(card);
     await refreshMediaCard(ch.id);
@@ -1791,14 +1770,6 @@ async function refreshMediaCard(id) {
     if (videoPlayer) { videoPlayer.innerHTML = ''; videoPlayer.style.display = 'none'; }
   }
   updateMediaState(id, !!audioRec, !!(videoRec || (ytUrl && getYtId(ytUrl))));
-  // Restore saved script
-  if (!state.scripts) state.scripts = {};
-  if (state.scripts[id]) {
-    const bodyEl = document.getElementById('script-body-' + id);
-    const toggleBtn = document.getElementById('script-toggle-' + id);
-    if (bodyEl) { bodyEl.innerHTML = formatScript(state.scripts[id]); }
-    if (toggleBtn) toggleBtn.textContent = '📄 학습 대본 보기';
-  }
 }
 
 function updateMediaState(id, hasAudio, hasVideo) {
@@ -2088,157 +2059,12 @@ async function generateTTS(chapterId) {
     }
   }
   if (!success && statusEl && !statusEl.textContent.includes('브라우저')) {
-    statusEl.innerHTML = '⚠️ AI 오디오 생성 실패 — 대본 생성 후 🔊 버튼으로 들어보세요!';
+    statusEl.innerHTML = '⚠️ AI 오디오 생성 실패 — 브라우저 TTS를 이용해주세요!';
   }
   if (btn) btn.disabled = false;
 }
 
 // ===== SCRIPT GENERATION =====
-async function generateScript(chapterId) {
-  if (!state.apiKey) { alert('API 키가 필요해요! AI 튜터 페이지에서 설정해주세요.'); return; }
-  const ch = CHAPTERS.find(c => c.id === chapterId);
-  if (!ch) return;
-  const genBtn = document.getElementById('script-gen-' + chapterId);
-  const statusEl = document.getElementById('script-status-' + chapterId);
-  const bodyEl = document.getElementById('script-body-' + chapterId);
-  if (genBtn) genBtn.disabled = true;
-  if (statusEl) statusEl.innerHTML = '<span class="tts-loading">✨ AI가 대본을 작성하고 있어요...</span>';
-
-  // Collect lesson content for this chapter
-  const phaseCurr = CURRICULUM.find(c => c.phase === ch.phase);
-  const lessons = phaseCurr ? phaseCurr.sections.flatMap(s => s.lessons) : [];
-  const contentSummary = lessons.map(l => {
-    const d = LESSON_CONTENT[l];
-    if (!d) return `- ${l}`;
-    const pts = d.points ? d.points.slice(0,3).map(p=>`  • ${p}`).join('\n') : '';
-    return `[${l}]\n${d.body[0]}\n${pts}`;
-  }).join('\n\n');
-
-  const prompt = `당신은 마케팅 교육 전문가입니다. 아래 커리큘럼 내용을 바탕으로 "${ch.title}" 챕터의 학습 대본을 작성해주세요.
-
-커리큘럼 내용:
-${contentSummary}
-
-요구사항:
-- 오디오를 들으면서 함께 볼 수 있는 학습 대본 형식으로 작성
-- 각 주제별로 "## 주제명" 형식의 소제목 사용
-- 핵심 개념은 쉬운 한국어로 설명
-- 실생활 예시 포함
-- 중요 포인트는 "✦ " 로 시작하는 bullet point로 작성
-- 전체 분량은 약 600~800자
-- 친근하고 이해하기 쉬운 어조로 작성
-- 마지막에 "📌 핵심 정리" 섹션 추가`;
-
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      if (statusEl) statusEl.textContent = '⚠️ 오류: ' + (data?.error?.message || res.status);
-      if (genBtn) genBtn.disabled = false; return;
-    }
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) { if (statusEl) statusEl.textContent = '⚠️ 응답 없음'; if (genBtn) genBtn.disabled = false; return; }
-
-    if (!state.scripts) state.scripts = {};
-    state.scripts[chapterId] = text;
-    saveState();
-
-    if (bodyEl) bodyEl.innerHTML = formatScript(text);
-    // Auto-open panel
-    const panel = document.getElementById('script-panel-' + chapterId);
-    if (panel) panel.classList.add('open');
-    const toggleBtn = document.getElementById('script-toggle-' + chapterId);
-    if (toggleBtn) toggleBtn.textContent = '📄 학습 대본 닫기';
-
-    if (statusEl) statusEl.textContent = '✅ 대본 생성 완료!';
-    addActivity('📄 학습 대본 생성: ' + ch.title);
-    setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
-  } catch(e) {
-    if (statusEl) statusEl.textContent = '⚠️ 오류: ' + e.message;
-  }
-  if (genBtn) genBtn.disabled = false;
-}
-
-function formatScript(text) {
-  // Convert markdown-ish text to HTML
-  return text
-    .replace(/##\s*(.+)/g, '<h5>$1</h5>')
-    .replace(/✦\s*(.+)/g, '<div class="s-point">$1</div>')
-    .replace(/📌\s*(.+)/g, '<h5>📌 $1</h5>')
-    .replace(/\n{2,}/g, '<br><br>')
-    .replace(/\n/g, '<br>');
-}
-
-function toggleScript(chapterId) {
-  const panel = document.getElementById('script-panel-' + chapterId);
-  const btn = document.getElementById('script-toggle-' + chapterId);
-  if (!panel) return;
-  const isOpen = panel.classList.toggle('open');
-  if (btn) btn.textContent = isOpen ? '📄 학습 대본 닫기' : '📄 학습 대본 보기';
-  if (isOpen) {
-    // scroll into view
-    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
-  }
-}
-
-function copyScript(chapterId) {
-  if (!state.scripts || !state.scripts[chapterId]) return;
-  navigator.clipboard.writeText(state.scripts[chapterId]).then(() => {
-    const btns = document.querySelectorAll(`#script-panel-${chapterId} .script-copy-btn`);
-    const copyBtn = [...btns].find(b => b.textContent.includes('복사'));
-    if (copyBtn) { copyBtn.textContent = '✅ 복사됨!'; setTimeout(() => copyBtn.textContent = '📋 복사', 2000); }
-  });
-}
-
-let currentSpeakId = null;
-function speakScript(chapterId) {
-  if (!('speechSynthesis' in window)) { alert('이 브라우저는 음성 재생을 지원하지 않아요.'); return; }
-  if (!state.scripts || !state.scripts[chapterId]) {
-    alert('먼저 ✨ AI 대본 생성을 눌러 대본을 만들어주세요!'); return;
-  }
-  speechSynthesis.cancel();
-  const cleanText = state.scripts[chapterId].replace(/[#*✦📌📝🎯🎧🎬]/g, '').replace(/\n{3,}/g, '\n\n');
-  const utter = new SpeechSynthesisUtterance(cleanText);
-  utter.lang = 'ko-KR';
-  utter.rate = 0.92;
-  utter.pitch = 1.05;
-
-  // Try to pick a Korean voice
-  const voices = speechSynthesis.getVoices();
-  const koVoice = voices.find(v => v.lang.startsWith('ko')) || voices.find(v => v.lang.startsWith('ko-KR'));
-  if (koVoice) utter.voice = koVoice;
-
-  const speakBtn = document.getElementById('speak-btn-' + chapterId);
-  const stopBtn = document.getElementById('stop-btn-' + chapterId);
-  if (speakBtn) speakBtn.style.display = 'none';
-  if (stopBtn) stopBtn.style.display = 'inline-flex';
-  currentSpeakId = chapterId;
-
-  utter.onend = utter.onerror = () => {
-    if (speakBtn) speakBtn.style.display = 'inline-flex';
-    if (stopBtn) stopBtn.style.display = 'none';
-    currentSpeakId = null;
-  };
-  speechSynthesis.speak(utter);
-}
-
-function stopSpeech() {
-  speechSynthesis.cancel();
-  if (currentSpeakId) {
-    const speakBtn = document.getElementById('speak-btn-' + currentSpeakId);
-    const stopBtn = document.getElementById('stop-btn-' + currentSpeakId);
-    if (speakBtn) speakBtn.style.display = 'inline-flex';
-    if (stopBtn) stopBtn.style.display = 'none';
-    currentSpeakId = null;
-  }
-}
 
 // ===== KPI CALCULATOR =====
 function calcKPI() {
