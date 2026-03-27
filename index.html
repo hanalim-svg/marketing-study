@@ -294,16 +294,53 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(c
 ::-webkit-scrollbar-thumb{background:#f4c0d4;border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--mauve-light)}
 
-/* Responsive */
+/* ===== MOBILE HAMBURGER & OVERLAY ===== */
+#mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:linear-gradient(90deg,#fff0f5,#fce7ef);border-bottom:1px solid #f4c0d4;z-index:150;align-items:center;padding:0 16px;gap:12px}
+#mob-bar h1{font-family:'Playfair Display',serif;font-size:16px;color:var(--rose);flex:1}
+#mob-hamburger{background:none;border:none;cursor:pointer;font-size:22px;color:var(--rose);padding:4px;line-height:1}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:99;backdrop-filter:blur(2px)}
+#sidebar-overlay.show{display:block}
+
+/* ===== MOBILE BOTTOM NAV ===== */
+#mob-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,#fff0f5,#fce7ef);border-top:1px solid #f4c0d4;z-index:150;padding:6px 0 env(safe-area-inset-bottom,6px)}
+.mob-nav-scroll{display:flex;overflow-x:auto;gap:0;padding:0 4px;scrollbar-width:none}
+.mob-nav-scroll::-webkit-scrollbar{display:none}
+.mob-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;border-radius:12px;cursor:pointer;min-width:60px;font-size:9px;color:var(--text-light);font-weight:600;white-space:nowrap;transition:all .2s;border:none;background:none;font-family:'Noto Sans KR',sans-serif}
+.mob-nav-btn .mn-icon{font-size:20px;line-height:1}
+.mob-nav-btn.active{color:var(--rose);background:rgba(232,82,122,.1)}
+
+/* ===== RESPONSIVE ===== */
 @media(max-width:768px){
-  #sidebar{transform:translateX(-100%);transition:transform .3s}
+  #mob-bar{display:flex}
+  #mob-bottom-nav{display:block}
+  #sidebar{transform:translateX(-100%);transition:transform .3s;z-index:100;top:0}
   #sidebar.open{transform:translateX(0)}
-  #main{margin-left:0}
+  #main{margin-left:0;padding-top:56px;padding-bottom:72px}
+  .page{padding:20px 16px}
+  .page-header h2{font-size:22px}
   .grid-4{grid-template-columns:repeat(2,1fr)}
   .grid-3{grid-template-columns:1fr}
   .grid-2{grid-template-columns:1fr}
   .kpi-inputs{grid-template-columns:1fr}
   .kpi-results{grid-template-columns:repeat(2,1fr)}
+  .stat-card .stat-val{font-size:20px}
+  .chat-msg{max-width:90%}
+  .note-editor{min-height:200px}
+  .question-card{padding:16px}
+  .question-card .q-text{font-size:15px}
+  .option-item{font-size:13px;padding:10px 12px}
+  .chapter-card-body{grid-template-columns:1fr!important}
+  .weekly-cal{gap:3px}
+  .cal-day{padding:5px 2px}
+  .cal-day .day-dot{width:24px;height:24px;font-size:11px}
+  .export-btn{bottom:80px}
+  .card{border-radius:16px;padding:16px}
+  .phase-header{padding:12px 14px}
+  .phase-header h3{font-size:14px}
+}
+@media(max-width:400px){
+  .grid-4{grid-template-columns:1fr 1fr}
+  .mob-nav-btn{min-width:52px;padding:6px 8px;font-size:8px}
 }
 .export-btn{position:fixed;bottom:20px;right:20px;z-index:200}
 </style>
@@ -312,6 +349,30 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(c
 
 <!-- Floating Hearts -->
 <div class="hearts" id="hearts"></div>
+
+<!-- Mobile Top Bar -->
+<div id="mob-bar">
+  <button id="mob-hamburger" onclick="toggleSidebar()">☰</button>
+  <h1>✦ Hana's Marketing</h1>
+</div>
+
+<!-- Sidebar Overlay -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- Mobile Bottom Nav -->
+<div id="mob-bottom-nav">
+  <div class="mob-nav-scroll">
+    <button class="mob-nav-btn active" data-page="dashboard"><span class="mn-icon">🏠</span>홈</button>
+    <button class="mob-nav-btn" data-page="curriculum"><span class="mn-icon">📚</span>커리큘럼</button>
+    <button class="mob-nav-btn" data-page="assignments"><span class="mn-icon">✏️</span>과제</button>
+    <button class="mob-nav-btn" data-page="quiz"><span class="mn-icon">🎯</span>퀴즈</button>
+    <button class="mob-nav-btn" data-page="notes"><span class="mn-icon">📝</span>노트</button>
+    <button class="mob-nav-btn" data-page="ai"><span class="mn-icon">🤖</span>AI튜터</button>
+    <button class="mob-nav-btn" data-page="audio"><span class="mn-icon">🎧</span>오디오</button>
+    <button class="mob-nav-btn" data-page="tracker"><span class="mn-icon">📊</span>트래커</button>
+    <button class="mob-nav-btn" data-page="wrongnotes"><span class="mn-icon">📕</span>오답노트</button>
+  </div>
+</div>
 
 <!-- Sidebar -->
 <nav id="sidebar">
@@ -944,16 +1005,37 @@ function createHearts() {
 }
 createHearts();
 
-// Navigation
+// Navigation helpers
+function navigateTo(page) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const match = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if (match) match.classList.add('active');
+  document.querySelectorAll('.mob-nav-btn').forEach(n => n.classList.remove('active'));
+  const mobMatch = document.querySelector(`.mob-nav-btn[data-page="${page}"]`);
+  if (mobMatch) mobMatch.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (page === 'dashboard') updateDashboard();
+  closeSidebar();
+  window.scrollTo(0, 0);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+// Sidebar nav
 document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    item.classList.add('active');
-    const page = item.dataset.page;
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
-    if (page === 'dashboard') updateDashboard();
-  });
+  item.addEventListener('click', () => navigateTo(item.dataset.page));
+});
+// Mobile bottom nav
+document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => navigateTo(btn.dataset.page));
 });
 
 // ===== CURRICULUM =====
