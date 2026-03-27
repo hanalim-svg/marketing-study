@@ -1571,16 +1571,33 @@ function hideTyping() {
   if (el) el.remove();
 }
 
+let lastApiCall = 0;
+let isSending = false;
+
 async function sendChat() {
+  if (isSending) return;
   const input = document.getElementById('chatInput');
   const msg = input.value.trim();
   if (!msg) return;
   input.value = '';
+
+  // API 요청 간격 4초 강제
+  const now = Date.now();
+  const wait = 4000 - (now - lastApiCall);
+  if (wait > 0) await new Promise(r => setTimeout(r, wait));
+
+  isSending = true;
+  const btn = document.querySelector('.chat-input-area .btn-primary');
+  if (btn) btn.disabled = true;
+
   appendMsg('user', msg);
   chatHistory.push({ role: 'user', parts: [{ text: msg }] });
-  // 최근 20개 메시지만 유지 (오래된 것 삭제)
   if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+  lastApiCall = Date.now();
   await callGemini(msg);
+
+  isSending = false;
+  if (btn) btn.disabled = false;
 }
 
 function quickAsk(q) {
