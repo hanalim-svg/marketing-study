@@ -545,6 +545,7 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(c
     <span style="font-size:13px;color:var(--text-light);white-space:nowrap">🔑 Gemini API Key</span>
     <input type="password" id="apiKeyInput" placeholder="AIza... 로 시작하는 키를 입력하세요">
     <button class="btn btn-sm btn-primary" onclick="saveApiKey()">저장</button>
+    <button class="btn btn-sm btn-outline" onclick="copyApiLink()" id="copyLinkBtn" style="display:none">🔗 링크 복사</button>
     <span id="apiKeyStatus" style="font-size:12px;color:var(--text-light)"></span>
   </div>
   <div class="ai-feature-btns">
@@ -991,6 +992,23 @@ function saveState() {
   localStorage.setItem('hana_marketing_state', JSON.stringify(state));
 }
 
+// URL 파라미터로 API 키 자동 로드
+(function() {
+  const params = new URLSearchParams(location.search);
+  const k = params.get('k');
+  if (k) {
+    try {
+      const key = atob(k);
+      if (key.startsWith('AIza')) {
+        loadState();
+        state.apiKey = key;
+        saveState();
+      }
+    } catch(e) {}
+    history.replaceState(null, '', location.pathname);
+  }
+})();
+
 // ===== INIT =====
 loadState();
 
@@ -1354,7 +1372,7 @@ async function generateAIQuiz() {
   }).join('\n');
   const prompt = `다음 마케팅 커리큘럼 내용을 바탕으로 4지선다 퀴즈 ${count}개를 만들어줘.\n\n커리큘럼 (Phase ${phase}):\n${lessonTexts}\n\n반드시 아래 JSON 형식으로만 답해줘 (다른 텍스트 없이):\n[{"q":"질문","options":["선택지1","선택지2","선택지3","선택지4"],"answer":정답인덱스(0~3),"exp":"해설"},...]`;
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${state.apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${state.apiKey}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
     });
@@ -1493,6 +1511,16 @@ function saveApiKey() {
   showApiStatus('✅ 저장됨! AI 기능을 모두 사용할 수 있어요 🌸', 'var(--rose)');
   const banner = document.getElementById('apiKeyBanner');
   if (banner) banner.style.display = 'none';
+  const linkBtn = document.getElementById('copyLinkBtn');
+  if (linkBtn) linkBtn.style.display = 'inline-flex';
+}
+
+function copyApiLink() {
+  if (!state.apiKey) return;
+  const url = location.href.split('#')[0].split('?')[0] + '?k=' + btoa(state.apiKey);
+  navigator.clipboard.writeText(url).then(() => {
+    showApiStatus('🔗 링크 복사됨! 다른 곳에서 열면 자동 저장돼요', 'var(--rose)');
+  });
 }
 
 function checkApiKeyBanner() {
@@ -1582,16 +1610,15 @@ async function callGemini(userMsg) {
       system_instruction: { parts: [{ text: systemMsg }] },
       contents: chatHistory
     };
-    const fetchGemini = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${state.apiKey}`, {
+    const fetchGemini = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${state.apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     let res = await fetchGemini();
-    // 429면 5초 기다렸다가 1회 재시도
+    // 429면 3초 기다렸다가 조용히 재시도
     if (res.status === 429) {
-      appendMsg('ai', '⏳ 잠깐! 요청이 많아서 5초 후 자동으로 다시 시도할게~');
-      await new Promise(r => setTimeout(r, 5000));
+      await new Promise(r => setTimeout(r, 3000));
       res = await fetchGemini();
     }
     hideTyping();
@@ -2017,7 +2044,7 @@ async function generateTTS(chapterId) {
   // Try Gemini TTS models in order
   const ttsModels = [
     'gemini-2.5-flash-preview-tts',
-    'gemini-2.0-flash-preview-image-generation', // fallback attempt
+    'gemini-2.0-flash-lite-preview-image-generation', // fallback attempt
   ];
 
   let success = false;
