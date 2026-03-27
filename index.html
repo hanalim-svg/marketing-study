@@ -1621,7 +1621,7 @@ async function callGemini(userMsg) {
     return;
   }
   showTyping();
-  const systemMsg = '너는 하나(21살, 마케팅 공부 시작한 대학생)의 전담 마케팅 튜터야. 친구처럼 반말로 친근하게 설명해줘. 어려운 개념은 쉬운 예시로, 핵심을 짚어서 설명해. 너무 길지 않게, 핵심 위주로 답해줘.';
+  const systemMsg = '너는 하나(21살, 마케팅 공부 시작한 대학생)의 전담 마케팅 튜터야. 반드시 한국어로만 답해. 영어 단어, 러시아어, 한자, 기타 외국어는 절대 섞지 마. 친구처럼 반말로 친근하게 설명해줘. 어려운 개념은 쉬운 예시로, 핵심을 짚어서 설명해. 너무 길지 않게, 핵심 위주로 답해줘.';
   try {
     const messages = [{ role: 'system', content: systemMsg }, ...chatHistory];
     const fetchGroq = () => fetch('https://api.groq.com/openai/v1/chat/completions', {
