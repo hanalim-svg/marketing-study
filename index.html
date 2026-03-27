@@ -535,15 +535,15 @@ body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(c
 <section class="page" id="page-ai">
   <div class="page-header">
     <h2>🤖 AI 튜터</h2>
-    <p>Gemini AI와 함께 마케팅을 공부해요</p>
+    <p>Groq AI와 함께 마케팅을 공부해요</p>
   </div>
   <div id="apiKeyBanner" style="display:none;background:linear-gradient(90deg,#fff3d0,#ffecd2);border:1.5px solid #f0a500;border-radius:14px;padding:14px 18px;margin-bottom:14px;font-size:13px;color:#7a4f00">
     ⚠️ <b>API 키를 입력해야 AI 기능을 사용할 수 있어요!</b><br>
-    <span style="font-size:12px;opacity:.85">👉 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#e8527a;font-weight:700">aistudio.google.com/apikey</a> 에서 무료 키 발급 후 아래에 붙여넣기</span>
+    <span style="font-size:12px;opacity:.85">👉 <a href="https://console.groq.com/keys" target="_blank" style="color:#e8527a;font-weight:700">console.groq.com/keys</a> 에서 무료 키 발급 후 아래에 붙여넣기</span>
   </div>
   <div class="api-key-box">
-    <span style="font-size:13px;color:var(--text-light);white-space:nowrap">🔑 Gemini API Key</span>
-    <input type="password" id="apiKeyInput" placeholder="AIza... 로 시작하는 키를 입력하세요">
+    <span style="font-size:13px;color:var(--text-light);white-space:nowrap">🔑 Groq API Key</span>
+    <input type="password" id="apiKeyInput" placeholder="gsk_... 로 시작하는 키를 입력하세요">
     <button class="btn btn-sm btn-primary" onclick="saveApiKey()">저장</button>
     <button class="btn btn-sm btn-outline" onclick="copyApiLink()" id="copyLinkBtn" style="display:none">🔗 링크 복사</button>
     <span id="apiKeyStatus" style="font-size:12px;color:var(--text-light)"></span>
@@ -999,7 +999,7 @@ function saveState() {
   if (k) {
     try {
       const key = atob(k);
-      if (key.startsWith('AIza')) {
+      if (key.startsWith('gsk_')) {
         loadState();
         state.apiKey = key;
         saveState();
@@ -1372,13 +1372,13 @@ async function generateAIQuiz() {
   }).join('\n');
   const prompt = `다음 마케팅 커리큘럼 내용을 바탕으로 4지선다 퀴즈 ${count}개를 만들어줘.\n\n커리큘럼 (Phase ${phase}):\n${lessonTexts}\n\n반드시 아래 JSON 형식으로만 답해줘 (다른 텍스트 없이):\n[{"q":"질문","options":["선택지1","선택지2","선택지3","선택지4"],"answer":정답인덱스(0~3),"exp":"해설"},...]`;
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${state.apiKey}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.apiKey}` },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 2048 })
     });
     const data = await res.json();
     if (!res.ok) { status.textContent = '⚠️ API 오류: ' + (data?.error?.message || res.status); btn.disabled = false; return; }
-    let text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    let text = data?.choices?.[0]?.message?.content || '';
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) { status.textContent = '⚠️ JSON 파싱 실패. 다시 시도해봐요!'; btn.disabled = false; return; }
     const quizzes = JSON.parse(match[0]);
@@ -1505,7 +1505,7 @@ let chatHistory = [];
 
 function saveApiKey() {
   const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key.startsWith('AIza')) { showApiStatus('⚠️ AIza로 시작하는 키를 입력해요', 'orange'); return; }
+  if (!key.startsWith('gsk_')) { showApiStatus('⚠️ gsk_로 시작하는 Groq 키를 입력해요', 'orange'); return; }
   state.apiKey = key;
   saveState();
   showApiStatus('✅ 저장됨! AI 기능을 모두 사용할 수 있어요 🌸', 'var(--rose)');
@@ -1542,7 +1542,7 @@ function initChat() {
   checkApiKeyBanner();
   if (!c.children.length) {
     const hasKey = !!state.apiKey;
-    appendMsg('ai', '안녕 하나야! 😊 나는 너의 전담 마케팅 튜터야.\n어떤 마케팅 개념이든 물어봐~ STP, ROAS, A/B테스트 뭐든지 OK!\n\n' + (hasKey ? '🔑 API 키가 연결돼 있어서 바로 대화할 수 있어! 궁금한 거 물어봐 🌸' : '아 참, 위에서 Gemini API 키 먼저 저장해야 대화할 수 있어! 🌸'));
+    appendMsg('ai', '안녕 하나야! 😊 나는 너의 전담 마케팅 튜터야.\n어떤 마케팅 개념이든 물어봐~ STP, ROAS, A/B테스트 뭐든지 OK!\n\n' + (hasKey ? '🔑 API 키가 연결돼 있어서 바로 대화할 수 있어! 궁금한 거 물어봐 🌸' : '아 참, 위에서 Groq API 키 먼저 저장해야 대화할 수 있어! 🌸'));
   }
 }
 
@@ -1591,7 +1591,7 @@ async function sendChat() {
   if (btn) btn.disabled = true;
 
   appendMsg('user', msg);
-  chatHistory.push({ role: 'user', parts: [{ text: msg }] });
+  chatHistory.push({ role: 'user', content: msg });
   if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
   lastApiCall = Date.now();
   await callGemini(msg);
@@ -1617,48 +1617,44 @@ async function aiFeature(type) {
 
 async function callGemini(userMsg) {
   if (!state.apiKey) {
-    appendMsg('ai', '앗, API 키가 없어! 🔑 위에서 Gemini API 키를 저장해주면 AI 튜터랑 제대로 대화할 수 있어~ \n\n지금은 미리 준비된 답변을 드릴게:' + getOfflineReply(userMsg));
+    appendMsg('ai', '앗, API 키가 없어! 🔑 위에서 Groq API 키를 저장해주면 AI 튜터랑 제대로 대화할 수 있어~ \n\n지금은 미리 준비된 답변을 드릴게:' + getOfflineReply(userMsg));
     return;
   }
   showTyping();
   const systemMsg = '너는 하나(21살, 마케팅 공부 시작한 대학생)의 전담 마케팅 튜터야. 친구처럼 반말로 친근하게 설명해줘. 어려운 개념은 쉬운 예시로, 핵심을 짚어서 설명해. 너무 길지 않게, 핵심 위주로 답해줘.';
   try {
-    const body = {
-      system_instruction: { parts: [{ text: systemMsg }] },
-      contents: chatHistory
-    };
-    const fetchGemini = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${state.apiKey}`, {
+    const messages = [{ role: 'system', content: systemMsg }, ...chatHistory];
+    const fetchGroq = () => fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.apiKey}` },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, max_tokens: 1024 })
     });
-    let res = await fetchGemini();
-    // 429면 3초 기다렸다가 조용히 재시도
+    let res = await fetchGroq();
     if (res.status === 429) {
       await new Promise(r => setTimeout(r, 3000));
-      res = await fetchGemini();
+      res = await fetchGroq();
     }
     hideTyping();
     if (!res.ok) {
       const err = await res.json();
-      const code = err?.error?.code;
+      const code = res.status;
       const msgs = {
         400: '요청 형식이 잘못됐어 😅 다시 시도해봐!',
         401: 'API 키가 유효하지 않아 🔑 키를 다시 확인해봐!',
         403: 'API 접근이 거부됐어 🚫 키 권한을 확인해봐!',
-        429: 'API 요청이 너무 많아 ⏳ 1분 후에 다시 물어봐!',
-        500: 'Gemini 서버에 문제가 생겼어 😢 잠시 후 다시 시도해봐!'
+        429: 'API 요청이 너무 많아 ⏳ 잠깐 기다렸다 다시 물어봐!',
+        500: 'Groq 서버에 문제가 생겼어 😢 잠시 후 다시 시도해봐!'
       };
       appendMsg('ai', msgs[code] || `오류가 났어 (${code}) 😢 잠시 후 다시 시도해봐!`);
       return;
     }
     const data = await res.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const reply = data?.choices?.[0]?.message?.content;
     if (!reply) {
       appendMsg('ai', '응답을 받지 못했어 😢 다시 한번 물어봐줘!');
       return;
     }
-    chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+    chatHistory.push({ role: 'assistant', content: reply });
     appendMsg('ai', reply);
   } catch(e) {
     hideTyping();
@@ -2042,70 +2038,8 @@ function pcmToWav(base64PCM, sampleRate) {
 }
 
 async function generateTTS(chapterId) {
-  if (!state.apiKey) { alert('API 키가 필요해요! AI 튜터 페이지에서 설정해주세요.'); return; }
-  const ch = CHAPTERS.find(c => c.id === chapterId);
-  if (!ch) return;
-  const btn = document.getElementById('tts-btn-' + chapterId);
   const statusEl = document.getElementById('tts-status-' + chapterId);
-  if (btn) btn.disabled = true;
-  if (statusEl) statusEl.innerHTML = '<span class="tts-loading">🎙 AI 오디오 생성 중...</span>';
-
-  const phaseCurr = CURRICULUM.find(c => c.phase === ch.phase);
-  const lessons = phaseCurr ? phaseCurr.sections.flatMap(s => s.lessons).slice(0, 4) : [];
-  const script = `안녕하세요! ${ch.title} 학습 오디오를 시작할게요. ` +
-    lessons.map(l => {
-      const d = LESSON_CONTENT[l];
-      return d ? `${l}에 대해 알아볼게요. ${d.body[0].substring(0, 120)}` : `${l}에 대해 공부해봐요.`;
-    }).join(' 다음으로, ') + ' 오늘도 열심히 공부했어요! 수고했어요.';
-
-  // Try Gemini TTS models in order
-  const ttsModels = [
-    'gemini-2.5-flash-preview-tts',
-    'gemini-2.0-flash-lite-preview-image-generation', // fallback attempt
-  ];
-
-  let success = false;
-  for (const model of ttsModels) {
-    try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.apiKey}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: script }] }],
-          generationConfig: {
-            responseModalities: ['AUDIO'],
-            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } }
-          }
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        const errMsg = data?.error?.message || '';
-        const errCode = data?.error?.code || res.status;
-        // If quota/permission error, break and fall back to browser TTS
-        if (errCode === 429 || errCode === 403 || errMsg.includes('quota') || errMsg.includes('not supported')) {
-          if (statusEl) statusEl.innerHTML = `⚠️ Gemini TTS 불가 (${errCode}): 브라우저 TTS로 재생하세요 👇`;
-          break;
-        }
-        continue; // try next model
-      }
-      const b64 = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-      if (!b64) continue;
-      const wavDataUrl = pcmToWav(b64, 24000);
-      await dbPut({ id: 'audio_' + chapterId, data: wavDataUrl, name: ch.title + '_TTS.wav', size: b64.length * 0.75 });
-      addActivity('🎙 AI 오디오 생성: ' + ch.title);
-      await refreshMediaCard(chapterId);
-      buildCurriculum();
-      if (statusEl) statusEl.textContent = '✅ 오디오 생성 완료!';
-      success = true;
-      break;
-    } catch(e) {
-      continue;
-    }
-  }
-  if (!success && statusEl && !statusEl.textContent.includes('브라우저')) {
-    statusEl.innerHTML = '⚠️ AI 오디오 생성 실패 — 브라우저 TTS를 이용해주세요!';
-  }
-  if (btn) btn.disabled = false;
+  if (statusEl) statusEl.innerHTML = '🔊 아래 브라우저 TTS 버튼을 이용해주세요!';
 }
 
 // ===== SCRIPT GENERATION =====
