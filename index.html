@@ -1354,7 +1354,7 @@ async function generateAIQuiz() {
   }).join('\n');
   const prompt = `다음 마케팅 커리큘럼 내용을 바탕으로 4지선다 퀴즈 ${count}개를 만들어줘.\n\n커리큘럼 (Phase ${phase}):\n${lessonTexts}\n\n반드시 아래 JSON 형식으로만 답해줘 (다른 텍스트 없이):\n[{"q":"질문","options":["선택지1","선택지2","선택지3","선택지4"],"answer":정답인덱스(0~3),"exp":"해설"},...]`;
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${state.apiKey}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
     });
@@ -1582,7 +1582,7 @@ async function callGemini(userMsg) {
       system_instruction: { parts: [{ text: systemMsg }] },
       contents: chatHistory
     };
-    const fetchGemini = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.apiKey}`, {
+    const fetchGemini = () => fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${state.apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
