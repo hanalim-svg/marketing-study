@@ -1730,7 +1730,11 @@ async function buildAudio() {
           <div class="script-panel" id="script-panel-${ch.id}">
             <div class="script-header">
               <h4>📄 ${ch.title} 학습 대본</h4>
-              <button class="script-copy-btn" onclick="copyScript('${ch.id}')">📋 복사</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="script-copy-btn" id="speak-btn-${ch.id}" onclick="speakScript('${ch.id}')">🔊 대본 읽기</button>
+                <button class="script-copy-btn" onclick="stopSpeech()" style="display:none" id="stop-btn-${ch.id}">⏹ 정지</button>
+                <button class="script-copy-btn" onclick="copyScript('${ch.id}')">📋 복사</button>
+              </div>
             </div>
             <div class="script-body" id="script-body-${ch.id}">대본이 없어요. ✨ AI 대본 생성 버튼을 눌러주세요!</div>
           </div>
@@ -2017,45 +2021,64 @@ async function generateTTS(chapterId) {
   const btn = document.getElementById('tts-btn-' + chapterId);
   const statusEl = document.getElementById('tts-status-' + chapterId);
   if (btn) btn.disabled = true;
-  if (statusEl) statusEl.innerHTML = '<span class="tts-loading">🎙 오디오 생성 중...</span>';
+  if (statusEl) statusEl.innerHTML = '<span class="tts-loading">🎙 AI 오디오 생성 중...</span>';
 
   const phaseCurr = CURRICULUM.find(c => c.phase === ch.phase);
   const lessons = phaseCurr ? phaseCurr.sections.flatMap(s => s.lessons).slice(0, 4) : [];
   const script = `안녕하세요! ${ch.title} 학습 오디오를 시작할게요. ` +
     lessons.map(l => {
       const d = LESSON_CONTENT[l];
-      return d ? `${l}에 대해 알아볼게요. ${d.body[0].substring(0, 100)}` : `${l}에 대해 공부해봐요.`;
+      return d ? `${l}에 대해 알아볼게요. ${d.body[0].substring(0, 120)}` : `${l}에 대해 공부해봐요.`;
     }).join(' 다음으로, ') + ' 오늘도 열심히 공부했어요! 수고했어요.';
 
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${state.apiKey}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: script }] }],
-        generationConfig: {
-          responseModalities: ['AUDIO'],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } }
+  // Try Gemini TTS models in order
+  const ttsModels = [
+    'gemini-2.5-flash-preview-tts',
+    'gemini-2.0-flash-preview-image-generation', // fallback attempt
+  ];
+
+  let success = false;
+  for (const model of ttsModels) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.apiKey}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: script }] }],
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } }
+          }
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const errMsg = data?.error?.message || '';
+        const errCode = data?.error?.code || res.status;
+        // If quota/permission error, break and fall back to browser TTS
+        if (errCode === 429 || errCode === 403 || errMsg.includes('quota') || errMsg.includes('not supported')) {
+          if (statusEl) statusEl.innerHTML = `⚠️ Gemini TTS 불가 (${errCode}): 브라우저 TTS로 재생하세요 👇`;
+          break;
         }
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      if (statusEl) statusEl.textContent = '⚠️ TTS 오류: ' + (data?.error?.message || res.status);
-      if (btn) btn.disabled = false; return;
+        continue; // try next model
+      }
+      const b64 = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (!b64) continue;
+      const wavDataUrl = pcmToWav(b64, 24000);
+      await dbPut({ id: 'audio_' + chapterId, data: wavDataUrl, name: ch.title + '_TTS.wav', size: b64.length * 0.75 });
+      addActivity('🎙 AI 오디오 생성: ' + ch.title);
+      await refreshMediaCard(chapterId);
+      buildCurriculum();
+      if (statusEl) statusEl.textContent = '✅ 오디오 생성 완료!';
+      success = true;
+      break;
+    } catch(e) {
+      continue;
     }
-    const b64 = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    if (!b64) { if (statusEl) statusEl.textContent = '⚠️ 오디오 데이터 없음'; if (btn) btn.disabled = false; return; }
-    const wavDataUrl = pcmToWav(b64, 24000);
-    await dbPut({ id: 'audio_' + chapterId, data: wavDataUrl, name: ch.title + '_TTS.wav', size: b64.length * 0.75 });
-    addActivity('🎙 TTS 오디오 생성: ' + ch.title);
-    await refreshMediaCard(chapterId);
-    buildCurriculum();
-    if (statusEl) statusEl.textContent = '✅ 오디오 생성 완료!';
-    if (btn) btn.disabled = false;
-  } catch(e) {
-    if (statusEl) statusEl.textContent = '⚠️ 오류: ' + e.message;
-    if (btn) btn.disabled = false;
   }
+  if (!success && statusEl && !statusEl.textContent.includes('브라우저')) {
+    statusEl.innerHTML = '⚠️ AI 오디오 생성 실패 — 대본 생성 후 🔊 버튼으로 들어보세요!';
+  }
+  if (btn) btn.disabled = false;
 }
 
 // ===== SCRIPT GENERATION =====
@@ -2156,9 +2179,53 @@ function toggleScript(chapterId) {
 function copyScript(chapterId) {
   if (!state.scripts || !state.scripts[chapterId]) return;
   navigator.clipboard.writeText(state.scripts[chapterId]).then(() => {
-    const btn = document.querySelector(`#script-panel-${chapterId} .script-copy-btn`);
-    if (btn) { btn.textContent = '✅ 복사됨!'; setTimeout(() => btn.textContent = '📋 복사', 2000); }
+    const btns = document.querySelectorAll(`#script-panel-${chapterId} .script-copy-btn`);
+    const copyBtn = [...btns].find(b => b.textContent.includes('복사'));
+    if (copyBtn) { copyBtn.textContent = '✅ 복사됨!'; setTimeout(() => copyBtn.textContent = '📋 복사', 2000); }
   });
+}
+
+let currentSpeakId = null;
+function speakScript(chapterId) {
+  if (!('speechSynthesis' in window)) { alert('이 브라우저는 음성 재생을 지원하지 않아요.'); return; }
+  if (!state.scripts || !state.scripts[chapterId]) {
+    alert('먼저 ✨ AI 대본 생성을 눌러 대본을 만들어주세요!'); return;
+  }
+  speechSynthesis.cancel();
+  const cleanText = state.scripts[chapterId].replace(/[#*✦📌📝🎯🎧🎬]/g, '').replace(/\n{3,}/g, '\n\n');
+  const utter = new SpeechSynthesisUtterance(cleanText);
+  utter.lang = 'ko-KR';
+  utter.rate = 0.92;
+  utter.pitch = 1.05;
+
+  // Try to pick a Korean voice
+  const voices = speechSynthesis.getVoices();
+  const koVoice = voices.find(v => v.lang.startsWith('ko')) || voices.find(v => v.lang.startsWith('ko-KR'));
+  if (koVoice) utter.voice = koVoice;
+
+  const speakBtn = document.getElementById('speak-btn-' + chapterId);
+  const stopBtn = document.getElementById('stop-btn-' + chapterId);
+  if (speakBtn) speakBtn.style.display = 'none';
+  if (stopBtn) stopBtn.style.display = 'inline-flex';
+  currentSpeakId = chapterId;
+
+  utter.onend = utter.onerror = () => {
+    if (speakBtn) speakBtn.style.display = 'inline-flex';
+    if (stopBtn) stopBtn.style.display = 'none';
+    currentSpeakId = null;
+  };
+  speechSynthesis.speak(utter);
+}
+
+function stopSpeech() {
+  speechSynthesis.cancel();
+  if (currentSpeakId) {
+    const speakBtn = document.getElementById('speak-btn-' + currentSpeakId);
+    const stopBtn = document.getElementById('stop-btn-' + currentSpeakId);
+    if (speakBtn) speakBtn.style.display = 'inline-flex';
+    if (stopBtn) stopBtn.style.display = 'none';
+    currentSpeakId = null;
+  }
 }
 
 // ===== KPI CALCULATOR =====
