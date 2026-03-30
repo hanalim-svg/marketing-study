@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoTech Academy - 자동차 정비 학습 시스템</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --c1:#1a1a2e;--c2:#16213e;--c3:#0f3460;
+    --acc:#e94560;--acc2:#f5a623;--acc3:#00d2ff;
+    --txt:#e8e8f0;--txt2:#a8a8c0;--txt3:#6060a0;
+    --card:#1e2040;--card2:#252850;
+    --font-display:'Exo 2',sans-serif;--font-body:'Noto Sans KR',sans-serif;
+  }
+  body{background:var(--c1);color:var(--txt);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+  .header{background:linear-gradient(135deg,var(--c1) 0%,var(--c3) 100%);border-bottom:2px solid var(--acc);position:relative;overflow:hidden}
+  .header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(233,69,96,0.03) 30px,rgba(233,69,96,0.03) 60px);pointer-events:none}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;position:relative;z-index:1;flex-wrap:wrap;gap:10px}
+  .logo-area{display:flex;align-items:center;gap:14px}
+  .logo-icon{width:48px;height:48px;background:var(--acc);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .logo-text{font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:2px;color:#fff;line-height:1.1}
+  .logo-sub{font-size:10px;color:var(--acc3);letter-spacing:4px;font-weight:300;text-transform:uppercase}
+  .header-badge{background:rgba(233,69,96,0.15);border:1px solid var(--acc);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--acc);font-family:var(--font-display);letter-spacing:1px}
+  .user-tag{display:flex;align-items:center;gap:10px}
+  .user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--font-display)}
+  .user-name{font-size:13px;color:var(--txt2)}
+  .racing-stripe{height:4px;background:linear-gradient(90deg,var(--acc) 0%,var(--acc2) 50%,var(--acc3) 100%);position:relative}
+  .racing-stripe::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(90deg,transparent 0px,transparent 20px,rgba(255,255,255,0.3) 20px,rgba(255,255,255,0.3) 22px)}
+  .nav{display:flex;gap:4px;padding:10px 28px;background:var(--c2);border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav-btn{background:transparent;border:1px solid transparent;color:var(--txt2);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-family:var(--font-body);white-space:nowrap;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+  .nav-btn:hover{background:rgba(233,69,96,0.1);border-color:rgba(233,69,96,0.3);color:var(--txt)}
+  .nav-btn.active{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:500}
+  .nav-icon{font-size:15px}
+  .main{padding:24px 28px;max-width:1400px;margin:0 auto}
+  .page{display:none}.page.active{display:block}
+  .section-title{font-family:var(--font-display);font-size:18px;font-weight:600;margin-bottom:16px;color:#fff;display:flex;align-items:center;gap:10px;letter-spacing:1px}
+  .section-title::before{content:'';width:4px;height:20px;background:var(--acc);border-radius:2px;display:inline-block}
+  .dash-hero{background:linear-gradient(135deg,var(--c3) 0%,var(--c2) 100%);border:1px solid rgba(0,210,255,0.2);border-radius:12px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+  .dash-hero::after{content:'HK';position:absolute;right:-20px;bottom:-30px;font-size:180px;font-family:var(--font-display);font-weight:900;color:rgba(255,255,255,0.03);line-height:1;pointer-events:none}
+  .dash-hero h1{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:6px;color:#fff}
+  .dash-hero p{color:var(--txt2);font-size:14px;line-height:1.7}
+  .hero-stats{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap}
+  .hero-stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:14px 20px;flex:1;min-width:90px}
+  .hero-stat .num{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--acc2)}
+  .hero-stat .lbl{font-size:11px;color:var(--txt3);margin-top:2px;letter-spacing:1px}
+  .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+  .stat-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s}
+  .stat-card:hover{border-color:var(--acc);transform:translateY(-2px)}
+  .stat-card .icon{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .stat-card .info .title{font-size:12px;color:var(--txt3);margin-bottom:4px}
+  .stat-card .info .value{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--txt)}
+  .icon-red{background:rgba(233,69,96,0.2)}.icon-blue{background:rgba(0,210,255,0.2)}.icon-gold{background:rgba(245,166,35,0.2)}.icon-green{background:rgba(52,211,153,0.2)}
+  .chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:30px}
+  .chapter-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+  .chapter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+  .chapter-card:hover{border-color:rgba(233,69,96,0.4);transform:translateY(-3px);background:var(--card2)}
+  .chapter-card .ch-num{font-family:var(--font-display);font-size:11px;color:var(--acc);letter-spacing:2px;margin-bottom:8px;font-weight:600}
+  .chapter-card .ch-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.3}
+  .chapter-card .ch-desc{font-size:12px;color:var(--txt2);line-height:1.6;margin-bottom:14px}
+  .chapter-card .ch-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:8px}
+  .chapter-card .ch-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width 0.5s}
+  .chapter-card .ch-prog{font-size:11px;color:var(--txt3);display:flex;justify-content:space-between}
+  .ch-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);border-radius:4px;padding:2px 8px;font-size:10px;color:var(--acc);margin-bottom:10px}
+  .study-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+  .study-sidebar{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;position:sticky;top:20px}
+  .sidebar-header{background:var(--acc);padding:16px 18px;font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:1px}
+  .sidebar-item{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:all 0.2s;font-size:13px;display:flex;align-items:center;gap:10px;color:var(--txt2)}
+  .sidebar-item:hover{background:rgba(255,255,255,0.04);color:var(--txt)}
+  .sidebar-item.active{background:rgba(233,69,96,0.15);color:var(--acc);border-left:3px solid var(--acc)}
+  .sidebar-item .si-num{font-family:var(--font-display);font-size:11px;color:var(--txt3);width:20px;flex-shrink:0}
+  .sidebar-item .si-check{margin-left:auto;color:var(--acc3);font-size:12px}
+  .study-content{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:28px}
+  .study-title{font-family:var(--font-display);font-size:24px;font-weight:700;color:#fff;margin-bottom:6px}
+  .study-subtitle{font-size:13px;color:var(--acc3);margin-bottom:24px;letter-spacing:1px}
+  .study-text{font-size:14px;line-height:1.9;color:var(--txt2);margin-bottom:20px}
+  .study-text strong{color:var(--acc2);font-weight:600}
+  .info-box{background:rgba(0,210,255,0.06);border:1px solid rgba(0,210,255,0.2);border-left:4px solid var(--acc3);border-radius:6px;padding:16px 18px;margin:18px 0;font-size:13px;color:var(--txt);line-height:1.8}
+  .warn-box{background:rgba(233,69,96,0.06);border:1px solid rgba(233,69,96,0.2);border-left:4px solid var(--acc);border-radius:6px;padding:16px 18px;margin:18px 0;font-size:13px;color:var(--txt);line-height:1.8}
+  .tip-label{font-size:10px;letter-spacing:2px;font-weight:600;margin-bottom:6px;display:block}
+  .tip-label.blue{color:var(--acc3)}.tip-label.red{color:var(--acc)}
+  .tts-bar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 18px;margin-bottom:20px;flex-wrap:wrap}
+  .tts-btn{background:var(--acc);border:none;color:#fff;padding:8px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-family:var(--font-body);display:flex;align-items:center;gap:6px;transition:all 0.2s}
+  .tts-btn:hover{background:#c73550}
+  .tts-label{font-size:12px;color:var(--txt2)}
+  .tts-speed{background:var(--card2);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--txt);padding:4px 10px;font-size:12px}
+  .tts-wave{display:flex;gap:3px;align-items:center;height:24px}
+  .tts-wave span{display:block;width:3px;background:var(--acc);border-radius:2px;animation:wave 1s ease-in-out infinite;height:8px}
+  .tts-wave span:nth-child(2){animation-delay:0.1s;height:14px}
+  .tts-wave span:nth-child(3){animation-delay:0.2s;height:20px}
+  .tts-wave span:nth-child(4){animation-delay:0.3s;height:14px}
+  .tts-wave span:nth-child(5){animation-delay:0.4s;height:8px}
+  @keyframes wave{0%,100%{transform:scaleY(0.5)}50%{transform:scaleY(1)}}
+  .tts-wave.hidden{display:none}
+  .key-terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:20px 0}
+  .key-term{background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:12px 14px}
+  .kt-name{font-size:13px;font-weight:500;color:var(--acc2);margin-bottom:4px}
+  .kt-def{font-size:12px;color:var(--txt2);line-height:1.5}
+  .study-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+  .btn{border:none;padding:10px 22px;border-radius:6px;cursor:pointer;font-size:13px;font-family:var(--font-body);font-weight:500;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px}
+  .btn-primary{background:var(--acc);color:#fff}.btn-primary:hover{background:#c73550}
+  .btn-secondary{background:var(--card2);color:var(--txt2);border:1px solid rgba(255,255,255,0.1)}.btn-secondary:hover{border-color:var(--acc);color:var(--txt)}
+  .btn-ghost{background:transparent;color:var(--acc3);border:1px solid rgba(0,210,255,0.3)}.btn-ghost:hover{background:rgba(0,210,255,0.1)}
+  .quiz-container{max-width:700px}
+  .quiz-progress{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+  .qprog-bar{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+  .qprog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:3px;transition:width 0.4s}
+  .qprog-text{font-family:var(--font-display);font-size:13px;color:var(--txt2);white-space:nowrap}
+  .quiz-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:28px;margin-bottom:14px}
+  .quiz-q{font-size:17px;font-weight:500;color:#fff;line-height:1.6;margin-bottom:24px}
+  .quiz-q .q-num{font-family:var(--font-display);color:var(--acc);font-size:13px;display:block;margin-bottom:8px;letter-spacing:2px}
+  .quiz-options{display:flex;flex-direction:column;gap:10px}
+  .quiz-opt{background:var(--card2);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 18px;cursor:pointer;font-size:14px;color:var(--txt2);transition:all 0.2s;display:flex;align-items:center;gap:12px;text-align:left;width:100%}
+  .quiz-opt:hover{border-color:rgba(0,210,255,0.4);color:var(--txt);background:rgba(0,210,255,0.05)}
+  .quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,0.1);color:#34d399}
+  .quiz-opt.wrong{border-color:var(--acc);background:rgba(233,69,96,0.1);color:var(--acc)}
+  .quiz-opt .opt-letter{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:600;flex-shrink:0}
+  .quiz-result{background:var(--card2);border-radius:8px;padding:16px 18px;margin-top:16px;font-size:13px;line-height:1.7;display:none}
+  .quiz-result.show{display:block}
+  .quiz-result.right{border-left:4px solid #34d399;color:#a8f0d1}
+  .quiz-result.wrong{border-left:4px solid var(--acc);color:var(--txt)}
+  .quiz-result.hint{border-left:4px solid var(--acc2);color:var(--acc2)}
+  .quiz-nav{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+  .score-badge{display:inline-flex;gap:4px;align-items:center;padding:4px 12px;border-radius:20px;font-size:12px;font-family:var(--font-display)}
+  .score-badge.good{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:#34d399}
+  .score-badge.bad{background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);color:var(--acc)}
+  .ai-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+  .chat-window{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;height:620px}
+  .chat-header{background:linear-gradient(135deg,var(--c3),var(--c2));padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .ai-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .ai-name{font-family:var(--font-display);font-weight:600;font-size:15px;color:#fff}
+  .ai-status{font-size:11px;color:var(--acc3);display:flex;align-items:center;gap:4px}
+  .ai-dot{width:6px;height:6px;border-radius:50%;background:var(--acc3);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .chat-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.1) transparent}
+  .chat-body::-webkit-scrollbar{width:4px}
+  .chat-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+  .msg{display:flex;gap:10px;max-width:92%;animation:fadeUp 0.3s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .msg.user{align-self:flex-end;flex-direction:row-reverse}
+  .msg-bubble{background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.8;color:var(--txt2)}
+  .msg.user .msg-bubble{background:rgba(233,69,96,0.15);border-color:rgba(233,69,96,0.3);color:var(--txt)}
+  .msg-ava{width:30px;height:30px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+  .msg.user .msg-ava{background:linear-gradient(135deg,var(--acc),var(--acc2));font-size:11px;font-family:var(--font-display);font-weight:700;color:#fff}
+  .chat-input-area{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:10px}
+  .chat-input{flex:1;background:var(--card2);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:var(--txt);font-size:13px;font-family:var(--font-body);resize:none;outline:none;line-height:1.5}
+  .chat-input:focus{border-color:rgba(233,69,96,0.4)}
+  .chat-input::placeholder{color:var(--txt3)}
+  .chat-send{background:var(--acc);border:none;color:#fff;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:18px;transition:all 0.2s;flex-shrink:0}
+  .chat-send:hover{background:#c73550}
+  .chat-send:disabled{opacity:0.5;cursor:not-allowed}
+  .ai-sidebar{display:flex;flex-direction:column;gap:14px}
+  .ai-side-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px}
+  .ai-side-card h4{font-family:var(--font-display);font-size:13px;color:var(--acc);letter-spacing:1px;margin-bottom:12px;font-weight:600}
+  .quick-btn{width:100%;background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:9px 12px;color:var(--txt2);font-size:12px;cursor:pointer;text-align:left;margin-bottom:6px;transition:all 0.2s;font-family:var(--font-body)}
+  .quick-btn:hover{border-color:var(--acc);color:var(--txt);background:rgba(233,69,96,0.08)}
+  .wn-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .wn-filter{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--txt2);cursor:pointer;transition:all 0.2s}
+  .wn-filter.active{background:var(--acc);border-color:var(--acc);color:#fff}
+  .wn-item{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden}
+  .wn-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--acc)}
+  .wn-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .wn-q{font-size:14px;font-weight:500;color:#fff;flex:1;line-height:1.6}
+  .wn-tag{background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);border-radius:4px;padding:2px 8px;font-size:10px;color:var(--acc);white-space:nowrap;flex-shrink:0}
+  .wn-answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .wn-ans{background:var(--card2);border-radius:6px;padding:10px 12px;font-size:12px}
+  .wn-ans .ans-label{font-size:10px;letter-spacing:1px;margin-bottom:4px;font-weight:600}
+  .wn-ans.wrong-ans .ans-label{color:var(--acc)}.wn-ans.right-ans .ans-label{color:#34d399}
+  .wn-memo{background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--txt2);line-height:1.7}
+  .wn-memo strong{color:var(--acc2)}
+  .exam-lobby{text-align:center;padding:40px 0;max-width:600px;margin:0 auto}
+  .exam-icon{font-size:60px;margin-bottom:20px;display:block}
+  .exam-lobby h2{font-family:var(--font-display);font-size:28px;font-weight:700;color:#fff;margin-bottom:10px}
+  .exam-lobby p{color:var(--txt2);font-size:14px;line-height:1.8;margin-bottom:30px}
+  .exam-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px;text-align:left}
+  .exam-opt-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:18px;cursor:pointer;transition:all 0.2s}
+  .exam-opt-card:hover{border-color:var(--acc);transform:translateY(-2px)}
+  .exam-opt-card.selected{border-color:var(--acc);background:rgba(233,69,96,0.08)}
+  .exam-opt-card h4{font-family:var(--font-display);font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
+  .exam-opt-card p{font-size:12px;color:var(--txt2);margin-top:4px}
+  .exam-selects{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+  .exam-select-group{color:var(--txt2);font-size:13px;display:flex;align-items:center;gap:8px}
+  .exam-select-group select{background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--txt);padding:6px 10px;font-size:13px;font-family:var(--font-body)}
+  .typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--txt3);margin:0 2px;animation:typing 1.2s infinite}
+  .typing-dots span:nth-child(2){animation-delay:0.2s}
+  .typing-dots span:nth-child(3){animation-delay:0.4s}
+  @keyframes typing{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @media(max-width:900px){.study-layout{grid-template-columns:1fr}.study-sidebar{position:static}.ai-layout{grid-template-columns:1fr}.ai-sidebar{display:grid;grid-template-columns:1fr 1fr;gap:14px}}
+  @media(max-width:600px){.main{padding:14px 14px}.header-inner{padding:12px 14px}.nav{padding:8px 14px}.wn-answers{grid-template-columns:1fr}.ai-sidebar{grid-template-columns:1fr}.hero-stats{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon">🏎</div>
+      <div>
+        <div class="logo-text">AUTOTECH ACADEMY</div>
+        <div class="logo-sub">자동차정비 학습 시스템</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="header-badge">🔧 한국폴리텍 미래자동차과</div>
+      <div class="user-tag">
+        <div class="user-avatar">현</div>
+        <div class="user-name">안현규 · 23세</div>
+      </div>
+    </div>
+  </div>
+  <div class="racing-stripe"></div>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">🏁</span> 대시보드</button>
+  <button class="nav-btn" onclick="showPage('study')" id="nav-study"><span class="nav-icon">📖</span> 챕터 학습</button>
+  <button class="nav-btn" onclick="showPage('quiz')" id="nav-quiz"><span class="nav-icon">⚡</span> 퀴즈</button>
+  <button class="nav-btn" onclick="showPage('exam')" id="nav-exam"><span class="nav-icon">📝</span> 모의시험</button>
+  <button class="nav-btn" onclick="showPage('wrongnote')" id="nav-wrongnote"><span class="nav-icon">📋</span> 오답노트</button>
+  <button class="nav-btn" onclick="showPage('ai')" id="nav-ai"><span class="nav-icon">🤖</span> AI 튜터</button>
+</nav>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="dash-hero">
+    <h1>안녕하세요, 현규씨! 👋</h1>
+    <p>오늘도 자동차 정비 마스터를 향해 달려볼까요?<br>아반떼 스포츠처럼 — 빠르고, 정확하게, 그리고 멋지게!</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">68%</div><div class="lbl">전체 진도</div></div>
+      <div class="hero-stat"><div class="num">142</div><div class="lbl">학습 포인트</div></div>
+      <div class="hero-stat"><div class="num">23</div><div class="lbl">퀴즈 통과</div></div>
+      <div class="hero-stat"><div class="num">15</div><div class="lbl">오답 복습</div></div>
+    </div>
+  </div>
+  <div class="stat-cards">
+    <div class="stat-card" onclick="showPage('study')"><div class="icon icon-red">📚</div><div class="info"><div class="title">학습 챕터</div><div class="value">8 / 12</div></div></div>
+    <div class="stat-card" onclick="showPage('quiz')"><div class="icon icon-blue">⚡</div><div class="info"><div class="title">오늘 퀴즈</div><div class="value">미완료</div></div></div>
+    <div class="stat-card" onclick="showPage('exam')"><div class="icon icon-gold">🏆</div><div class="info"><div class="title">최고 시험 점수</div><div class="value">82점</div></div></div>
+    <div class="stat-card" onclick="showPage('wrongnote')"><div class="icon icon-green">📋</div><div class="info"><div class="title">오답노트</div><div class="value">15문제</div></div></div>
+  </div>
+  <div class="section-title">📚 전체 학습 챕터</div>
+  <div class="chapter-grid" id="chapter-grid"></div>
+</div>
+
+<!-- STUDY -->
+<div class="page" id="page-study">
+  <div class="study-layout">
+    <div class="study-sidebar">
+      <div class="sidebar-header" id="sidebar-chapter-title">📖 챕터 학습</div>
+      <div id="sidebar-sections"></div>
+    </div>
+    <div>
+      <div class="study-content" id="study-content-area"></div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="page-quiz">
+  <div class="quiz-container">
+    <div class="section-title">⚡ 챕터 퀴즈</div>
+    <div class="quiz-progress">
+      <div class="qprog-bar"><div class="qprog-fill" id="qprog" style="width:20%"></div></div>
+      <div class="qprog-text" id="qprog-text">1 / 5</div>
+      <div class="score-badge good" id="score-display">정답 0개</div>
+    </div>
+    <div id="quiz-area"></div>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div class="page" id="page-exam">
+  <div id="exam-lobby-screen">
+    <div class="exam-lobby">
+      <span class="exam-icon">🏁</span>
+      <h2>자동차 정비 모의시험</h2>
+      <p>실제 자동차 정비 기능사 시험 형식으로 구성된 모의시험입니다.<br>챕터별 또는 전체 범위 시험을 선택하고 최고 점수에 도전하세요!</p>
+      <div class="exam-options">
+        <div class="exam-opt-card selected" onclick="selectExamType(this)"><h4>📚 챕터별 시험</h4><p>특정 챕터만 집중 시험</p></div>
+        <div class="exam-opt-card" onclick="selectExamType(this)"><h4>🌐 종합 모의시험</h4><p>전체 범위 통합 시험</p></div>
+        <div class="exam-opt-card" onclick="selectExamType(this)"><h4>⚠️ 오답 집중시험</h4><p>틀린 문제만 재시험</p></div>
+      </div>
+      <div class="exam-selects">
+        <div class="exam-select-group">문항 수:<select id="exam-count"><option>20문항</option><option selected>40문항</option><option>60문항</option></select></div>
+        <div class="exam-select-group">제한 시간:<select id="exam-time"><option>20분</option><option selected>40분</option><option>60분</option></select></div>
+      </div>
+      <button class="btn btn-primary" style="margin:0 auto;font-size:15px;padding:14px 36px" onclick="startExam()">🏁 시험 시작</button>
+    </div>
+  </div>
+  <div id="exam-result-screen" style="display:none">
+    <div style="text-align:center;padding:40px 0;max-width:500px;margin:0 auto">
+      <div style="font-size:60px;margin-bottom:16px">🏆</div>
+      <div style="font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--acc2);margin-bottom:8px" id="exam-score-display">82점</div>
+      <div style="font-size:14px;color:var(--txt2);margin-bottom:30px" id="exam-detail-text">40문항 중 33문항 정답</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="showPage('wrongnote')">📋 오답 확인하기</button>
+        <button class="btn btn-secondary" onclick="resetExam()">🔄 다시 시험 보기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WRONG NOTE -->
+<div class="page" id="page-wrongnote">
+  <div class="section-title">📋 오답노트</div>
+  <div class="wn-filters">
+    <div class="wn-filter active" onclick="filterWN(this)">전체 (15)</div>
+    <div class="wn-filter" onclick="filterWN(this)">엔진 구조</div>
+    <div class="wn-filter" onclick="filterWN(this)">냉각/윤활</div>
+    <div class="wn-filter" onclick="filterWN(this)">전기 시스템</div>
+    <div class="wn-filter" onclick="filterWN(this)">3회 이상 틀림</div>
+  </div>
+  <div id="wrongnote-list"></div>
+</div>
+
+<!-- API KEY MODAL -->
+<div id="api-key-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--card);border:1px solid rgba(233,69,96,0.4);border-radius:14px;padding:30px;max-width:440px;width:100%">
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">🔑 Grok API 키 입력</div>
+    <div style="font-size:13px;color:var(--txt2);line-height:1.7;margin-bottom:20px">
+      xAI 콘솔(<span style="color:var(--acc3)">console.x.ai</span>)에서 발급받은 API 키를 입력하세요.<br>
+      키는 브라우저에만 저장되며 외부로 전송되지 않습니다.
+    </div>
+    <input id="api-key-input" type="password" placeholder="xai-xxxxxxxxxxxxxxxxxxxxxxxx"
+      style="width:100%;background:var(--card2);border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:11px 14px;color:var(--txt);font-size:13px;font-family:var(--font-body);outline:none;margin-bottom:14px"
+      onkeydown="if(event.key==='Enter')saveApiKey()" />
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeApiModal()">취소</button>
+      <button class="btn btn-primary" onclick="saveApiKey()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI TUTOR -->
+<div class="page" id="page-ai">
+  <div class="ai-layout">
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="ai-avatar">🤖</div>
+        <div style="flex:1">
+          <div class="ai-name">정비사 AI 튜터 <span style="font-size:11px;color:var(--acc2);font-family:var(--font-body);font-weight:400;margin-left:6px">powered by Grok</span></div>
+          <div class="ai-status"><span class="ai-dot"></span>온라인 · 언제든 질문하세요</div>
+        </div>
+        <button onclick="openApiModal()" style="background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);border-radius:6px;color:var(--acc);font-size:11px;padding:5px 10px;cursor:pointer;font-family:var(--font-body);white-space:nowrap">🔑 API 키</button>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="msg">
+          <div class="msg-ava">🤖</div>
+          <div class="msg-bubble">안녕하세요, 현규씨! 👋 저는 <strong>Grok AI</strong> 기반 자동차 정비 전문 튜터입니다.<br><br>엔진, 냉각, 전기, 섀시, 연료, 제동, 도장, 용접 등 자동차 정비에 관한 모든 것을 물어보세요! 🔧<br><br>💡 오른쪽 상단 <strong>🔑 API 키</strong> 버튼을 눌러 Grok API 키를 먼저 입력해주세요!</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chat-input" placeholder="모르는 내용을 입력하세요... (예: 서모스탯이 뭔가요?)" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+        <button class="chat-send" id="chat-send-btn" onclick="sendChat()">➤</button>
+      </div>
+    </div>
+    <div class="ai-sidebar">
+      <div class="ai-side-card">
+        <h4>⚡ 빠른 질문</h4>
+        <button class="quick-btn" onclick="askQuick('서모스탯의 작동 원리를 쉽게 설명해줘')">🌡 서모스탯 작동 원리</button>
+        <button class="quick-btn" onclick="askQuick('4행정 사이클 순서를 설명해줘')">🔄 4행정 사이클 순서</button>
+        <button class="quick-btn" onclick="askQuick('오일 점도 5W-30이 무슨 뜻인지 설명해줘')">🛢 오일 점도 읽는 법</button>
+        <button class="quick-btn" onclick="askQuick('ABS의 작동 원리와 장점을 설명해줘')">🛑 ABS 작동 원리</button>
+        <button class="quick-btn" onclick="askQuick('배터리 방전 원인과 점프스타트 방법을 알려줘')">🔋 배터리 방전 & 점프</button>
+        <button class="quick-btn" onclick="askQuick('캠샤프트와 크랭크샤프트의 차이점과 역할을 설명해줘')">⚙️ 캠 vs 크랭크샤프트</button>
+        <button class="quick-btn" onclick="askQuick('타이어 마모도와 교체 시기를 설명해줘')">🛞 타이어 마모 & 교체</button>
+        <button class="quick-btn" onclick="askQuick('연료 인젝터 청소가 왜 필요한지 설명해줘')">💉 인젝터 청소 이유</button>
+      </div>
+      <div class="ai-side-card">
+        <h4>📊 오늘의 학습 현황</h4>
+        <div style="font-size:12px;color:var(--txt2);line-height:2">
+          <div>✅ 냉각 시스템 개요 완료</div>
+          <div>📖 냉각수 순환 경로 학습중</div>
+          <div>⚡ 퀴즈 5문제 대기중</div>
+          <div>📋 오답노트 15문제 복습 필요</div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);color:var(--acc2);font-weight:500">🎯 오늘 목표: 챕터 02 완료</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const chapters=[
+  {num:'01',title:'엔진 기본 구조와 원리',prog:100,status:'✅ 완료',desc:'4행정 사이클, 피스톤 운동, 흡배기 시스템의 구조와 작동원리',
+   sections:[{title:'엔진 개요 및 분류',done:true},{title:'4행정 사이클',done:true},{title:'피스톤과 크랭크샤프트',done:true},{title:'흡배기 시스템',done:true},{title:'밸브 타이밍',done:true}],
+   content:{title:'엔진 기본 구조와 원리',subtitle:'CHAPTER 01 · 완료',
+    text:`<strong>내연기관(Internal Combustion Engine)</strong>은 연료를 엔진 내부에서 연소시켜 그 폭발력을 기계적 에너지로 변환하는 장치입니다.<br><br>현재 대부분의 자동차는 <strong>4행정 왕복 피스톤 엔진</strong>을 사용합니다. 4행정이란 피스톤이 <strong>흡입 → 압축 → 폭발(동력) → 배기</strong>의 4가지 행정을 반복하며 동력을 발생시키는 방식입니다.<br><br><strong>흡입 행정</strong>: 피스톤이 내려가며 혼합가스(공기+연료)를 흡입합니다.<br><strong>압축 행정</strong>: 피스톤이 올라가며 혼합가스를 압축합니다.<br><strong>폭발(동력) 행정</strong>: 점화플러그가 불꽃을 일으켜 폭발하며 피스톤을 강하게 밀어냅니다.<br><strong>배기 행정</strong>: 연소된 가스를 밖으로 내보냅니다.`,
+    keyterms:[{name:'TDC (상사점)',def:'피스톤이 가장 높은 위치에 있을 때'},{name:'BDC (하사점)',def:'피스톤이 가장 낮은 위치에 있을 때'},{name:'압축비',def:'하사점 체적 / 상사점 체적 (가솔린 약 8~12:1)'},{name:'행정 (Stroke)',def:'상사점과 하사점 사이의 거리'}],
+    info:'4행정 순서 암기법: "흡압폭배" (흡입→압축→폭발→배기)로 외우세요! 시험에 자주 출제됩니다.',
+    warn:'압축 행정과 흡입 행정을 혼동하지 마세요. 피스톤이 올라가면서 가스를 압축하는 것이 압축 행정입니다.'}},
+  {num:'02',title:'냉각 및 윤활 시스템',prog:65,status:'🔄 학습중',desc:'엔진 냉각수 순환, 오일 압력, 윤활 경로 및 필터 관리',
+   sections:[{title:'냉각 시스템 개요',done:true},{title:'냉각수 순환 경로',done:false},{title:'서모스탯 작동 원리',done:false},{title:'윤활 시스템 개요',done:false},{title:'오일 펌프와 필터',done:false},{title:'오일 점도와 규격',done:false},{title:'과열 및 과냉 진단',done:false}],
+   content:{title:'냉각 시스템 개요',subtitle:'CHAPTER 02 · SECTION 01 · 예상시간 15분',
+    text:`<strong>냉각 시스템(Cooling System)</strong>은 엔진 작동 중 발생하는 열을 외부로 방출하여 엔진을 <strong>적정 온도(85~95°C)</strong>로 유지하는 시스템입니다.<br><br>엔진이 연료를 연소시킬 때 발생하는 열의 약 30%는 동력으로 변환되고, 나머지 70% 중 상당 부분이 냉각 시스템을 통해 방출됩니다.<br><br>냉각 방식에는 <strong>수냉식(Water Cooling)</strong>과 공냉식(Air Cooling)이 있으며, 현대 자동차는 대부분 수냉식을 사용합니다.`,
+    keyterms:[{name:'라디에이터 (Radiator)',def:'냉각수의 열을 외부 공기로 방출하는 열교환기'},{name:'워터 펌프 (Water Pump)',def:'냉각수를 강제 순환시키는 펌프. 보통 벨트로 구동'},{name:'서모스탯 (Thermostat)',def:'수온에 따라 열리고 닫히며 냉각수 흐름 조절'},{name:'부동액 (Antifreeze)',def:'냉각수 어는점을 낮추고 부식을 방지하는 첨가제'}],
+    info:'엔진 적정 작동 온도는 85~95°C입니다. 수온계가 이 범위를 벗어나면 즉시 점검이 필요합니다.',
+    warn:'오버히트 시 즉시 시동을 끄고 냉각 후 점검하세요! 뜨거운 상태에서 라디에이터 캡을 열면 고압 스팀으로 화상을 입을 수 있습니다!'}},
+  {num:'03',title:'연료 및 점화 시스템',prog:0,status:'🔒 대기중',desc:'연료 분사 방식, 점화 타이밍, 스파크 플러그와 고압 코일',
+   sections:[{title:'연료 공급 시스템',done:false},{title:'GDI 직분사 방식',done:false},{title:'점화장치 구조',done:false},{title:'스파크 플러그',done:false}],
+   content:{title:'연료 및 점화 시스템',subtitle:'CHAPTER 03',text:'연료 시스템은 연료 탱크로부터 연료를 흡입하여 엔진에 공급하는 역할을 합니다.<br><br><strong>연료 펌프</strong>가 연료를 가압하여 인젝터로 보내고, <strong>인젝터</strong>가 연료를 미세하게 분사합니다. <strong>점화 시스템</strong>은 압축된 혼합가스에 불꽃을 일으켜 연소가 일어나도록 합니다.',keyterms:[{name:'연료 펌프',def:'연료 탱크의 연료를 가압하여 인젝터로 공급'},{name:'인젝터',def:'연료를 미세하게 분사하는 전자식 밸브'},{name:'점화 코일',def:'저전압을 고전압으로 변환하는 장치'},{name:'스파크 플러그',def:'고전압 전기 불꽃으로 혼합가스 점화'}],info:'점화 순서(점화 타이밍)는 엔진 성능에 매우 중요합니다. 시험 빈출!',warn:''}},
+  {num:'04',title:'전기 및 전자 시스템',prog:30,status:'📡 진행중',desc:'배터리, 발전기, 스타터모터, 센서류, ECU 기초',
+   sections:[{title:'배터리 구조와 원리',done:true},{title:'발전기 (알터네이터)',done:true},{title:'스타터 모터',done:false},{title:'센서류 개요',done:false},{title:'ECU 기초',done:false}],
+   content:{title:'전기 및 전자 시스템',subtitle:'CHAPTER 04',text:'자동차 전기 시스템의 핵심은 <strong>배터리(Battery)</strong>, <strong>발전기(Alternator)</strong>, <strong>스타터 모터(Starter Motor)</strong>의 3요소입니다.<br><br>배터리는 시동 시 전기를 공급하고, 발전기는 엔진 구동 중 전기를 생산하여 배터리를 충전합니다. 스타터 모터는 배터리 전력으로 엔진을 최초 구동시킵니다.',keyterms:[{name:'배터리',def:'12V(완전충전 12.6~12.8V) 납산 축전지'},{name:'알터네이터',def:'엔진 구동으로 교류 전기를 발생시키는 발전기'},{name:'스타터 모터',def:'배터리 전력으로 엔진 크랭크샤프트를 회전시킴'},{name:'ECU',def:'엔진 제어 컴퓨터 — 각종 센서 신호를 분석하여 엔진 제어'}],info:'배터리 완전 충전 전압은 12.6~12.8V, 방전 시 11.8V 이하입니다. 시험 빈출!',warn:'배터리 역접속(+/- 반대 연결) 시 ECU, 퓨즈, 다이오드가 즉시 손상됩니다!'}},
+  {num:'05',title:'제동 및 조향 시스템',prog:0,status:'🔒 대기중',desc:'디스크/드럼 브레이크 구조, ABS, 파워스티어링 원리',
+   sections:[{title:'디스크 브레이크',done:false},{title:'드럼 브레이크',done:false},{title:'ABS 원리',done:false},{title:'파워스티어링',done:false}],
+   content:{title:'제동 및 조향 시스템',subtitle:'CHAPTER 05',text:'<strong>디스크 브레이크</strong>는 디스크 로터(원판)를 캘리퍼의 브레이크 패드가 양쪽에서 압착하여 제동력을 발생시킵니다.<br><br><strong>드럼 브레이크</strong>는 드럼 내부에서 슈(Shoe)가 벌어지며 드럼 내벽을 마찰시켜 제동합니다.<br><br><strong>ABS(Anti-lock Braking System)</strong>는 급제동 시 바퀴 잠김을 방지하여 조향 능력을 유지시켜 줍니다.',keyterms:[{name:'캘리퍼',def:'유압으로 브레이크 패드를 디스크에 압착'},{name:'브레이크 패드',def:'디스크 로터와 마찰하는 마찰재'},{name:'ABS',def:'바퀴 잠김 방지 시스템 — 급제동 시 조향 유지'},{name:'마스터 실린더',def:'브레이크 페달 압력을 유압으로 변환'}],info:'디스크 vs 드럼: 디스크는 방열 우수, 드럼은 주차브레이크에 주로 사용. 시험 빈출!',warn:'브레이크 오일(DOT 규격)은 흡습성이 있어 주기적 교환이 필요합니다!'}},
+  {num:'06',title:'섀시 및 현가 장치',prog:0,status:'🔒 대기중',desc:'서스펜션 형식, 쇼크업소버, 스프링, 얼라이먼트 이론',
+   sections:[{title:'서스펜션 형식',done:false},{title:'스프링과 댐퍼',done:false},{title:'휠 얼라이먼트',done:false}],
+   content:{title:'섀시 및 현가 장치',subtitle:'CHAPTER 06',text:'<strong>현가 장치(서스펜션)</strong>는 노면의 충격을 흡수하여 승차감을 향상시키고 타이어의 접지력을 유지하는 장치입니다.<br><br>주요 형식: <strong>맥퍼슨 스트럿</strong>(소형차 전륜), <strong>더블 위시본</strong>(스포츠카), <strong>멀티링크</strong>(고급차 후륜).',keyterms:[{name:'쇼크업소버',def:'스프링 진동을 감쇠시키는 댐퍼'},{name:'코일 스프링',def:'충격 에너지를 저장했다가 서서히 방출'},{name:'토(Toe)',def:'타이어를 위에서 봤을 때 앞쪽이 모이면 토인(Toe-in)'},{name:'캠버',def:'타이어를 앞에서 봤을 때 기울기 각도'}],info:'얼라이먼트 항목(토, 캠버, 캐스터, 킹핀 경사각)은 시험에 매우 자주 출제됩니다!',warn:'얼라이먼트가 틀어지면 타이어가 편마모되고 연비도 악화됩니다.'}},
+  {num:'07',title:'전자제어 엔진 (EFI)',prog:0,status:'🔒 대기중',desc:'각종 센서 신호 처리, 연료 분사량 제어, 공연비 피드백',
+   sections:[{title:'EFI 시스템 개요',done:false},{title:'O2 센서',done:false},{title:'MAP/MAF 센서',done:false}],
+   content:{title:'전자제어 엔진 (EFI)',subtitle:'CHAPTER 07',text:'<strong>EFI(Electronic Fuel Injection)</strong>는 ECU가 각종 센서 신호를 받아 최적의 연료 분사량과 점화 타이밍을 전자적으로 제어하는 시스템입니다.',keyterms:[{name:'O2 센서',def:'배기가스의 산소 농도로 공연비를 피드백 제어'},{name:'MAP 센서',def:'흡기 매니폴드 절대 압력으로 흡입 공기량 측정'},{name:'MAF 센서',def:'직접 공기 질량 유량을 측정하는 센서'},{name:'TPS',def:'스로틀 포지션 센서 — 가속 페달 위치 감지'}],info:'공연비 14.7:1 (이론 공연비, 람다=1)은 시험 필수 암기!',warn:''}},
+  {num:'08',title:'변속기 (MT/AT/CVT)',prog:0,status:'🔒 대기중',desc:'수동·자동·CVT 변속기 구조 및 동력 전달 원리',
+   sections:[{title:'수동변속기 구조',done:false},{title:'자동변속기 원리',done:false},{title:'CVT 벨트 방식',done:false}],
+   content:{title:'변속기 (MT/AT/CVT)',subtitle:'CHAPTER 08',text:'변속기는 엔진의 동력을 주행 상황에 맞게 토크와 속도를 변환하여 구동축으로 전달합니다.<br><br><strong>수동변속기(MT)</strong>: 클러치와 기어를 수동으로 조작. 구조 단순, 연비 우수.<br><strong>자동변속기(AT)</strong>: 토크 컨버터와 유성기어 세트로 자동 변속.<br><strong>CVT</strong>: 벨트와 풀리로 무단 변속, 부드러운 가속.',keyterms:[{name:'클러치',def:'엔진과 변속기 사이 동력 단속 장치'},{name:'토크 컨버터',def:'AT에서 유체를 이용한 동력 전달 및 증폭 장치'},{name:'유성기어',def:'AT의 핵심 — 선기어, 링기어, 유성기어, 캐리어'},{name:'CVT 풀리',def:'가변 직경 풀리로 무단 변속 구현'}],info:'토크 컨버터의 스톨 토크비(2.0~2.5:1)는 시험 빈출입니다!',warn:''}},
+];
+
+const wrongNotes=[
+  {q:'엔진의 4행정 사이클에서 혼합가스를 압축하는 행정은?',myAns:'흡입 행정',correct:'압축 행정 (2행정)',count:3,chapter:'엔진 구조',memo:'4행정 순서는 흡입→압축→폭발(동력)→배기입니다. 피스톤이 상사점으로 올라가며 혼합가스를 압축합니다.'},
+  {q:'라디에이터 캡의 주요 역할로 올바른 것은?',myAns:'냉각수 누수 방지만',correct:'냉각계통 압력 조절',count:2,chapter:'냉각/윤활',memo:'라디에이터 캡은 냉각 시스템의 압력을 일정하게 유지합니다. 규정값(0.9~1.1 kgf/㎠) 초과 시 열려 압력을 방출합니다.'},
+  {q:'전기회로에서 전류가 흐르지 않는 상태를 무엇이라 하는가?',myAns:'단락 (Short)',correct:'단선 (Open Circuit)',count:1,chapter:'전기 시스템',memo:'단선(Open Circuit): 회로가 끊어져 전류가 흐르지 않는 상태. 단락(Short Circuit): 전선이 접촉하여 과전류가 흐르는 상태. 혼동 주의!'},
+  {q:'엔진 오일의 점도 표시 "5W-30"에서 "W"가 의미하는 것은?',myAns:'Warm (따뜻함)',correct:'Winter (겨울용)',count:3,chapter:'냉각/윤활',memo:'W는 Winter의 약자입니다. 앞 숫자(5W)는 저온 점도, 뒤 숫자(30)는 고온 점도를 나타냅니다.'},
+  {q:'자동차 배터리의 완전 충전 전압은 약 몇 V인가?',myAns:'12V',correct:'12.6V ~ 12.8V',count:2,chapter:'전기 시스템',memo:'완전 충전 시 12.6~12.8V, 방전 시 11.8V 이하입니다. 정확한 숫자로 외워두세요!'},
+];
+
+const quizData=[
+  {q:'엔진의 냉각 시스템에서 냉각수의 온도를 조절하여 적정 온도를 유지시켜 주는 부품은?',opts:['워터 펌프','라디에이터','서모스탯','냉각 팬'],answer:2,exp:'서모스탯은 수온에 따라 밸브가 열리고 닫혀 냉각수 흐름을 조절합니다. 약 80~85°C에서 열리기 시작합니다.'},
+  {q:'4행정 기관의 행정 순서로 옳은 것은?',opts:['흡입→폭발→압축→배기','흡입→압축→폭발→배기','압축→흡입→폭발→배기','흡입→압축→배기→폭발'],answer:1,exp:'4행정 순서: 흡입 → 압축 → 폭발(동력) → 배기. "흡압폭배"로 외우세요!'},
+  {q:'엔진 오일의 점도 표시 "5W-30"에서 앞의 "5W"가 의미하는 것은?',opts:['고온에서의 점도','Winter(저온) 점도','오일의 등급','점도 인덱스'],answer:1,exp:'W는 Winter의 약자로 저온(겨울)에서의 오일 점도를 나타냅니다. 숫자가 낮을수록 추운 날씨에서도 잘 흐릅니다.'},
+  {q:'자동차 배터리의 (+)와 (-)를 반대로 연결했을 때 가장 먼저 손상될 수 있는 것은?',opts:['타이어','다이오드, 퓨즈, ECU 등 전자부품','브레이크 패드','서스펜션 부품'],answer:1,exp:'역접속(역극성) 시 과전류가 흘러 다이오드, 퓨즈, ECU 등 전자 부품이 즉시 손상됩니다. 항상 (+)극 먼저 연결하세요!'},
+  {q:'디스크 브레이크에서 제동력을 발생시키는 부품이 아닌 것은?',opts:['캘리퍼','브레이크 패드','디스크 로터','드럼'],answer:3,exp:'드럼은 드럼 브레이크의 부품입니다. 디스크 브레이크의 주요 부품은 디스크 로터(원판), 캘리퍼(집게), 브레이크 패드(마찰재)입니다.'},
+];
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.getElementById('nav-'+page).classList.add('active');
+  if(page==='quiz')renderQuizQuestion();
+}
+
+function renderChapters(){
+  document.getElementById('chapter-grid').innerHTML=chapters.map(ch=>`
+    <div class="chapter-card" onclick="showStudy(${chapters.indexOf(ch)})">
+      <div class="ch-num">CHAPTER ${ch.num}</div>
+      <div class="ch-badge">${ch.status}</div>
+      <div class="ch-title">${ch.title}</div>
+      <div class="ch-desc">${ch.desc}</div>
+      <div class="ch-bar"><div class="ch-fill" style="width:${ch.prog}%"></div></div>
+      <div class="ch-prog"><span>진도 ${ch.prog}%</span><span>${ch.prog===100?'🔥 마스터':ch.prog>0?'⚙️ 학습중':'🔒 대기중'}</span></div>
+    </div>
+  `).join('');
+}
+
+function showStudy(idx){
+  showPage('study');
+  const ch=chapters[idx];
+  document.getElementById('sidebar-chapter-title').textContent=`📖 ${ch.title}`;
+  document.getElementById('sidebar-sections').innerHTML=ch.sections.map((s,i)=>`
+    <div class="sidebar-item ${i===0?'active':''}" onclick="loadSection(this)">
+      <span class="si-num">0${i+1}</span>${s.title}${s.done?'<span class="si-check">✓</span>':''}
+    </div>
+  `).join('');
+  renderStudyContent(ch);
+}
+
+function loadSection(el){
+  document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function renderStudyContent(ch){
+  const c=ch.content;
+  const ttsRaw=c.text.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+  document.getElementById('study-content-area').innerHTML=`
+    <div class="study-title">${c.title}</div>
+    <div class="study-subtitle">${c.subtitle}</div>
+    <div class="tts-bar">
+      <button class="tts-btn" onclick="toggleTTS()"><span id="tts-icon">🔊</span><span id="tts-text">음성으로 듣기</span></button>
+      <select class="tts-speed" id="tts-speed">
+        <option value="0.8">0.8x 느리게</option>
+        <option value="1.0" selected>1.0x 보통</option>
+        <option value="1.2">1.2x 빠르게</option>
+        <option value="1.5">1.5x 매우빠름</option>
+      </select>
+      <div class="tts-wave hidden" id="tts-wave"><span></span><span></span><span></span><span></span><span></span></div>
+      <span class="tts-label" id="tts-status">이 섹션을 음성으로 들을 수 있습니다</span>
+    </div>
+    <div class="study-text" id="tts-content">${c.text}</div>
+    ${c.info?`<div class="info-box"><span class="tip-label blue">💡 핵심 포인트</span>${c.info}</div>`:''}
+    ${c.warn?`<div class="warn-box"><span class="tip-label red">⚠️ 주의사항</span>${c.warn}</div>`:''}
+    ${c.keyterms&&c.keyterms.length?`
+      <div class="section-title" style="margin-top:24px">핵심 용어 정리</div>
+      <div class="key-terms">${c.keyterms.map(t=>`<div class="key-term"><div class="kt-name">${t.name}</div><div class="kt-def">${t.def}</div></div>`).join('')}</div>
+    `:''}
+    <div class="study-actions">
+      <button class="btn btn-primary" onclick="showPage('quiz')">⚡ 퀴즈 풀기</button>
+      <button class="btn btn-ghost" onclick="showPage('ai')">🤖 AI에게 질문하기</button>
+    </div>
+  `;
+  window._ttsRaw=ttsRaw;
+}
+
+// ============================================================
+// TTS
+// ============================================================
+let ttsPlaying=false;
+function toggleTTS(){
+  const speed=parseFloat(document.getElementById('tts-speed')?.value||1.0);
+  const wave=document.getElementById('tts-wave');
+  const btnText=document.getElementById('tts-text');
+  const icon=document.getElementById('tts-icon');
+  const status=document.getElementById('tts-status');
+  if(ttsPlaying){speechSynthesis.cancel();ttsPlaying=false;wave.classList.add('hidden');btnText.textContent='음성으로 듣기';icon.textContent='🔊';status.textContent='이 섹션을 음성으로 들을 수 있습니다';return;}
+  if(!('speechSynthesis' in window)){status.textContent='이 브라우저는 음성을 지원하지 않습니다';return;}
+  const rawText=window._ttsRaw||document.getElementById('tts-content')?.innerText||'';
+  const utt=new SpeechSynthesisUtterance(rawText);
+  utt.lang='ko-KR';utt.rate=speed;
+  utt.onstart=()=>{ttsPlaying=true;wave.classList.remove('hidden');btnText.textContent='중지';icon.textContent='⏹';status.textContent='재생 중...';};
+  utt.onend=()=>{ttsPlaying=false;wave.classList.add('hidden');btnText.textContent='음성으로 듣기';icon.textContent='🔊';status.textContent='재생 완료';};
+  utt.onerror=()=>{ttsPlaying=false;wave.classList.add('hidden');};
+  speechSynthesis.speak(utt);
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+let currentQ=0,score=0,answered=false;
+const letters=['A','B','C','D'];
+const hints=['라디에이터는 방열, 워터펌프는 순환, 그럼 온도 조절은?','흡입 후에 반드시 필요한 과정은? 연소 전 준비 단계!','알파벳 W → Winter!','전자 부품은 역전류에 매우 취약합니다','드럼이라는 단어 자체에 힌트가 있습니다'];
+
+function renderQuizQuestion(){
+  const q=quizData[currentQ];
+  document.getElementById('qprog').style.width=((currentQ+1)/quizData.length*100)+'%';
+  document.getElementById('qprog-text').textContent=`${currentQ+1} / ${quizData.length}`;
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="quiz-card" id="quiz-card">
+      <div class="quiz-q"><span class="q-num">Q.0${currentQ+1}</span>${q.q}</div>
+      <div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="selectOpt(this,${i})"><span class="opt-letter">${letters[i]}</span>${o}</button>`).join('')}</div>
+      <div class="quiz-result" id="quiz-result"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-secondary" id="hint-btn" onclick="showQuizHint()">💡 힌트</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>다음 문제 →</button>
+      </div>
+    </div>`;
+  answered=false;
+}
+
+function selectOpt(el,idx){
+  if(answered)return;answered=true;
+  const q=quizData[currentQ];
+  document.querySelectorAll('.quiz-opt').forEach((o,i)=>{
+    o.disabled=true;
+    if(i===q.answer)o.classList.add('correct');
+    else if(i===idx&&idx!==q.answer)o.classList.add('wrong');
+  });
+  if(idx===q.answer){score++;document.getElementById('quiz-result').className='quiz-result right show';document.getElementById('quiz-result').innerHTML='✅ 정답입니다! '+q.exp;}
+  else{document.getElementById('quiz-result').className='quiz-result wrong show';document.getElementById('quiz-result').innerHTML='❌ 오답입니다. '+q.exp;}
+  document.getElementById('score-display').textContent=`정답 ${score}개`;
+  document.getElementById('score-display').className=`score-badge ${score/(currentQ+1)>=0.6?'good':'bad'}`;
+  document.getElementById('next-btn').disabled=false;
+  document.getElementById('hint-btn').style.display='none';
+}
+
+function showQuizHint(){
+  const res=document.getElementById('quiz-result');
+  res.className='quiz-result hint show';
+  res.innerHTML='💡 힌트: '+(hints[currentQ]||'천천히 생각해보세요!');
+}
+
+function nextQuestion(){
+  if(currentQ<quizData.length-1){currentQ++;renderQuizQuestion();}
+  else{
+    const pct=Math.round(score/quizData.length*100);
+    document.getElementById('quiz-area').innerHTML=`
+      <div style="text-align:center;padding:40px;background:var(--card);border-radius:12px">
+        <div style="font-size:56px;margin-bottom:16px">${pct>=80?'🏆':pct>=60?'👍':'📚'}</div>
+        <div style="font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--acc2);margin-bottom:8px">${pct}점</div>
+        <div style="color:var(--txt2);font-size:14px;margin-bottom:24px">${quizData.length}문제 중 ${score}문제 정답!</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="resetQuiz()">🔄 다시 풀기</button>
+          <button class="btn btn-secondary" onclick="showPage('wrongnote')">📋 오답 보기</button>
+        </div>
+      </div>`;
+  }
+}
+function resetQuiz(){currentQ=0;score=0;answered=false;renderQuizQuestion();}
+
+// ============================================================
+// EXAM
+// ============================================================
+function selectExamType(el){document.querySelectorAll('.exam-opt-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+function startExam(){
+  document.getElementById('exam-lobby-screen').style.display='none';
+  document.getElementById('exam-result-screen').style.display='block';
+  const count=document.getElementById('exam-count').value;
+  const s=Math.floor(Math.random()*20)+70;
+  const total=parseInt(count);
+  document.getElementById('exam-score-display').textContent=s+'점';
+  document.getElementById('exam-detail-text').textContent=`${total}문항 중 ${Math.round(total*s/100)}문항 정답`;
+}
+function resetExam(){document.getElementById('exam-lobby-screen').style.display='block';document.getElementById('exam-result-screen').style.display='none';}
+
+// ============================================================
+// WRONG NOTE
+// ============================================================
+function renderWrongNotes(){
+  document.getElementById('wrongnote-list').innerHTML=wrongNotes.map(n=>`
+    <div class="wn-item">
+      <div class="wn-header"><div class="wn-q">${n.q}</div><div class="wn-tag">⚠️ ${n.count}회 틀림</div></div>
+      <div class="wn-answers">
+        <div class="wn-ans wrong-ans"><div class="ans-label">내 답 (오답)</div><div style="color:var(--txt2);font-size:13px">${n.myAns}</div></div>
+        <div class="wn-ans right-ans"><div class="ans-label">정답</div><div style="color:#34d399;font-size:13px;font-weight:500">${n.correct}</div></div>
+      </div>
+      <div class="wn-memo">💡 <strong>해설:</strong> ${n.memo}</div>
+    </div>
+  `).join('');
+}
+function filterWN(el){document.querySelectorAll('.wn-filter').forEach(f=>f.classList.remove('active'));el.classList.add('active');}
+
+// ============================================================
+// AI CHAT — Grok API
+// ============================================================
+const conversationHistory=[];
+
+function saveApiKey(){
+  const key=document.getElementById('api-key-input').value.trim();
+  if(!key){alert('API 키를 입력해주세요!');return;}
+  localStorage.setItem('grok_api_key',key);
+  document.getElementById('api-key-modal').style.display='none';
+  addMsg('✅ Grok API 키가 저장되었습니다! 이제 무엇이든 물어보세요 🔧','ai');
+}
+function getApiKey(){return localStorage.getItem('grok_api_key')||'';}
+function openApiModal(){document.getElementById('api-key-modal').style.display='flex';}
+function closeApiModal(){document.getElementById('api-key-modal').style.display='none';}
+
+async function sendChat(){
+  const input=document.getElementById('chat-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  const apiKey=getApiKey();
+  if(!apiKey){openApiModal();return;}
+  addMsg(msg,'user');
+  input.value='';
+  document.getElementById('chat-send-btn').disabled=true;
+  conversationHistory.push({role:'user',content:msg});
+  const typingId=addTyping();
+  try{
+    const resp=await fetch('https://api.x.ai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+      body:JSON.stringify({
+        model:'grok-3',
+        max_tokens:1200,
+        messages:[
+          {role:'system',content:`당신은 대한민국 자동차 정비 전문 AI 튜터입니다.
+사용자는 한국폴리텍 미래자동차과에 다니는 23살 안현규 학생으로, 실기는 잘하지만 이론이 약합니다.
+담당 과목: 자동차 정비, 용접, 섀시, 도장 등.
+역할:
+- 엔진, 냉각, 윤활, 연료, 점화, 전기/전자, 섀시, 현가, 제동, 조향, 도장, 용접 등 모든 자동차 정비 이론 설명
+- 어려운 용어는 쉽고 친근하게 설명
+- 자동차 정비기능사 시험에 자주 나오는 내용 강조
+- 핵심 포인트를 ✅, 💡, ⚠️ 이모지로 강조
+- 현규씨라고 친근하게 호칭
+- 한국어로 답변`},
+          ...conversationHistory
+        ]
+      })
+    });
+    removeTyping(typingId);
+    if(resp.ok){
+      const data=await resp.json();
+      const text=data.choices[0].message.content||'';
+      conversationHistory.push({role:'assistant',content:text});
+      addMsg(text,'ai');
+    } else {
+      if(resp.status===401){localStorage.removeItem('grok_api_key');addMsg('⚠️ API 키가 올바르지 않습니다. 다시 입력해주세요.','ai');openApiModal();}
+      else{addMsg(`❌ 오류 (${resp.status}). 잠시 후 다시 시도해주세요! 🔧`,'ai');}
+    }
+  }catch(e){removeTyping(typingId);addMsg('🔌 네트워크 오류입니다. 인터넷 연결을 확인해주세요!','ai');}
+  document.getElementById('chat-send-btn').disabled=false;
+}
+
+function addMsg(text,role){
+  const body=document.getElementById('chat-body');
+  const div=document.createElement('div');
+  div.className=`msg ${role==='user'?'user':''}`;
+  div.innerHTML=`<div class="msg-ava">${role==='user'?'현':'🤖'}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  body.appendChild(div);body.scrollTop=body.scrollHeight;
+}
+function addTyping(){
+  const body=document.getElementById('chat-body');
+  const div=document.createElement('div');
+  const id='typing-'+Date.now();div.id=id;div.className='msg';
+  div.innerHTML=`<div class="msg-ava">🤖</div><div class="msg-bubble"><span class="typing-dots"><span></span><span></span><span></span></span></div>`;
+  body.appendChild(div);body.scrollTop=body.scrollHeight;return id;
+}
+function removeTyping(id){const el=document.getElementById(id);if(el)el.remove();}
+function askQuick(text){document.getElementById('chat-input').value=text;sendChat();}
+
+// ============================================================
+// INIT
+// ============================================================
+renderChapters();
+renderWrongNotes();
+renderQuizQuestion();
+showStudy(1);
+showPage('dashboard');
+</script>
+</body>
+</html>
