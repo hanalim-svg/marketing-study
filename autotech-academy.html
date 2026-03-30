@@ -262,13 +262,19 @@
 <!-- QUIZ -->
 <div class="page" id="page-quiz">
   <div class="quiz-container">
-    <div class="section-title">⚡ 챕터 퀴즈</div>
-    <div class="quiz-progress">
-      <div class="qprog-bar"><div class="qprog-fill" id="qprog" style="width:20%"></div></div>
-      <div class="qprog-text" id="qprog-text">1 / 5</div>
-      <div class="score-badge good" id="score-display">정답 0개</div>
+    <div id="quiz-select-screen">
+      <div class="section-title">⚡ 챕터 퀴즈</div>
+      <div style="font-size:13px;color:var(--txt2);margin-bottom:20px">학습할 챕터를 선택해서 퀴즈를 시작하세요.</div>
+      <div id="quiz-chapter-select" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
     </div>
-    <div id="quiz-area"></div>
+    <div id="quiz-play-screen" style="display:none">
+      <div class="quiz-progress">
+        <div class="qprog-bar"><div class="qprog-fill" id="qprog" style="width:0%"></div></div>
+        <div class="qprog-text" id="qprog-text">1 / 5</div>
+        <div class="score-badge good" id="score-display">정답 0개</div>
+      </div>
+      <div id="quiz-area"></div>
+    </div>
   </div>
 </div>
 
@@ -497,6 +503,7 @@ function showPage(page){
   document.getElementById('page-'+page).classList.add('active');
   document.getElementById('nav-'+page).classList.add('active');
   if(page==='wrongnote')renderWrongNotes();
+  if(page==='quiz')renderQuizSelectScreen();
 }
 
 function renderChapters(){
@@ -591,11 +598,27 @@ function toggleTTS(){
 let quizChapterIdx=0, quizQuestions=[], currentQ=0, quizScore=0, quizAnswered=false;
 const letters=['A','B','C','D'];
 
+function renderQuizSelectScreen(){
+  document.getElementById('quiz-select-screen').style.display='block';
+  document.getElementById('quiz-play-screen').style.display='none';
+  document.getElementById('quiz-chapter-select').innerHTML=chapters.map((ch,i)=>`
+    <div class="chapter-card" onclick="startChapterQuiz(${i})" style="cursor:pointer">
+      <div class="ch-num">CHAPTER ${ch.num}</div>
+      <div class="ch-badge">${ch.status}</div>
+      <div class="ch-title">${ch.title}</div>
+      <div class="ch-bar"><div class="ch-fill" style="width:${ch.prog}%"></div></div>
+      <div class="ch-prog"><span>진도 ${ch.prog}%</span><span style="color:var(--acc3);font-size:11px">퀴즈 풀기 →</span></div>
+    </div>
+  `).join('');
+}
+
 function startChapterQuiz(chIdx){
   quizChapterIdx=chIdx;
   quizQuestions=[...(chapterQuizData[chIdx]||[])];
   currentQ=0; quizScore=0; quizAnswered=false;
   showPage('quiz');
+  document.getElementById('quiz-select-screen').style.display='none';
+  document.getElementById('quiz-play-screen').style.display='block';
   renderQuizHeader();
   renderQuizQuestion();
 }
