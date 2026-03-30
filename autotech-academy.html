@@ -291,9 +291,29 @@
       <button class="btn btn-primary" style="margin:0 auto;font-size:15px;padding:14px 36px" onclick="startExam()">🏁 시험 시작</button>
     </div>
   </div>
+  <div id="exam-question-screen" style="display:none;max-width:760px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <div style="font-family:var(--font-display);font-size:14px;color:var(--txt2)" id="exam-q-counter">문제 1 / 20</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="background:var(--card);border:1px solid rgba(233,69,96,0.3);border-radius:8px;padding:6px 16px;font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--acc)" id="exam-timer">40:00</div>
+        <button class="btn btn-secondary" style="font-size:12px;padding:6px 14px" onclick="confirmExitExam()">나가기</button>
+      </div>
+    </div>
+    <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;margin-bottom:24px;overflow:hidden">
+      <div id="exam-prog-bar" style="height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:3px;transition:width 0.3s;width:0%"></div>
+    </div>
+    <div class="quiz-card" id="exam-q-card">
+      <div class="quiz-q"><span class="q-num" id="exam-q-num">Q.01</span><span id="exam-q-text"></span></div>
+      <div class="quiz-options" id="exam-q-opts"></div>
+      <div class="quiz-result" id="exam-q-result"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:18px">
+        <button class="btn btn-primary" id="exam-next-btn" onclick="examNextQuestion()" disabled>다음 문제 →</button>
+      </div>
+    </div>
+  </div>
   <div id="exam-result-screen" style="display:none">
     <div style="text-align:center;padding:40px 0;max-width:500px;margin:0 auto">
-      <div style="font-size:60px;margin-bottom:16px">🏆</div>
+      <div style="font-size:60px;margin-bottom:16px" id="exam-result-icon">🏆</div>
       <div style="font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--acc2);margin-bottom:8px" id="exam-score-display">82점</div>
       <div style="font-size:14px;color:var(--txt2);margin-bottom:30px" id="exam-detail-text">40문항 중 33문항 정답</div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -599,17 +619,133 @@ function resetQuiz(){currentQ=0;score=0;answered=false;renderQuizQuestion();}
 // ============================================================
 // EXAM
 // ============================================================
+const examPool=[
+  {q:'4행정 기관의 행정 순서로 옳은 것은?',opts:['흡입→폭발→압축→배기','흡입→압축→폭발→배기','압축→흡입→폭발→배기','흡입→압축→배기→폭발'],answer:1,exp:'흡입→압축→폭발(동력)→배기. "흡압폭배"로 암기하세요!'},
+  {q:'엔진의 냉각 시스템에서 냉각수 온도를 조절하는 부품은?',opts:['워터 펌프','라디에이터','서모스탯','냉각 팬'],answer:2,exp:'서모스탯은 수온에 따라 열리고 닫혀 냉각수 흐름을 조절합니다.'},
+  {q:'엔진 오일 점도 "5W-30"에서 "W"의 의미는?',opts:['Warm(따뜻함)','Wet(습도)','Winter(겨울)','Weight(무게)'],answer:2,exp:'W는 Winter의 약자로 저온에서의 오일 유동성을 나타냅니다.'},
+  {q:'자동차 배터리 완전 충전 전압은?',opts:['11.8V','12.0V','12.6~12.8V','13.5V'],answer:2,exp:'완전 충전 시 12.6~12.8V, 방전 시 11.8V 이하입니다.'},
+  {q:'디스크 브레이크에서 제동력을 발생시키는 부품이 아닌 것은?',opts:['캘리퍼','브레이크 패드','디스크 로터','드럼'],answer:3,exp:'드럼은 드럼 브레이크의 부품입니다. 디스크 브레이크는 캘리퍼+패드+로터로 구성됩니다.'},
+  {q:'피스톤이 가장 높은 위치에 있을 때를 무엇이라 하는가?',opts:['하사점(BDC)','상사점(TDC)','중립점','기준점'],answer:1,exp:'TDC(Top Dead Center) = 상사점, BDC(Bottom Dead Center) = 하사점'},
+  {q:'가솔린 엔진의 이론 공연비(람다=1)는?',opts:['12.5:1','14.7:1','16.0:1','18.0:1'],answer:1,exp:'이론 공연비 14.7:1은 완전연소를 위한 최적 공기:연료 비율입니다.'},
+  {q:'ABS(Anti-lock Braking System)의 주요 목적은?',opts:['제동 거리 단축','급제동 시 바퀴 잠김 방지','연비 향상','엔진 보호'],answer:1,exp:'ABS는 급제동 시 바퀴가 잠기는 것을 방지하여 조향 능력을 유지시킵니다.'},
+  {q:'엔진 냉각수의 적정 작동 온도 범위는?',opts:['60~70°C','75~80°C','85~95°C','100~110°C'],answer:2,exp:'엔진 적정 온도는 85~95°C입니다. 이 범위를 벗어나면 즉시 점검이 필요합니다.'},
+  {q:'알터네이터(발전기)의 역할은?',opts:['연료 공급','엔진 구동 중 전기 생산 및 배터리 충전','냉각수 순환','점화 신호 생성'],answer:1,exp:'알터네이터는 엔진 구동 중 교류 전기를 발생시켜 배터리를 충전합니다.'},
+  {q:'스타터 모터의 역할은?',opts:['연료 펌핑','배터리 충전','엔진 최초 구동(크랭킹)','오일 순환'],answer:2,exp:'스타터 모터는 배터리 전력으로 크랭크샤프트를 회전시켜 엔진을 시동합니다.'},
+  {q:'라디에이터 캡의 주요 역할은?',opts:['냉각수 색상 유지','냉각계통 압력 조절','냉각 팬 속도 제어','수온 센서 보호'],answer:1,exp:'라디에이터 캡은 냉각계통 압력을 일정하게 유지하고, 초과 시 압력을 방출합니다.'},
+  {q:'전기회로에서 단선(Open Circuit)이란?',opts:['과전류가 흐르는 상태','회로가 끊어져 전류가 흐르지 않는 상태','전압이 낮은 상태','저항이 없는 상태'],answer:1,exp:'단선=회로 단절(전류 없음), 단락=전선 접촉(과전류)으로 혼동하지 마세요!'},
+  {q:'ECU(Engine Control Unit)의 기능은?',opts:['엔진 오일 교환','센서 신호 분석 및 엔진 제어','타이어 공기압 조절','브레이크 유압 생성'],answer:1,exp:'ECU는 각종 센서 신호를 분석하여 연료 분사량, 점화 타이밍 등을 전자적으로 제어합니다.'},
+  {q:'맥퍼슨 스트럿(MacPherson Strut) 서스펜션이 주로 사용되는 위치는?',opts:['대형 트럭 후륜','소형차 전륜','스포츠카 후륜','버스 전륜'],answer:1,exp:'맥퍼슨 스트럿은 구조가 단순하고 공간 효율이 좋아 소형차 전륜에 많이 사용됩니다.'},
+  {q:'캠샤프트(Camshaft)의 역할은?',opts:['크랭크 운동을 직선 운동으로 변환','흡배기 밸브 개폐 제어','연료를 분사','오일을 순환'],answer:1,exp:'캠샤프트는 캠의 형상으로 흡기·배기 밸브를 정해진 타이밍에 열고 닫습니다.'},
+  {q:'토크 컨버터(Torque Converter)가 사용되는 변속기 형식은?',opts:['수동변속기(MT)','CVT','자동변속기(AT)','DCT'],answer:2,exp:'토크 컨버터는 자동변속기(AT)에서 클러치 역할을 하는 유체 동력 전달 장치입니다.'},
+  {q:'타이어를 위에서 봤을 때 앞쪽이 안쪽으로 모인 상태를?',opts:['토 아웃(Toe-out)','캠버(Camber)','토 인(Toe-in)','캐스터(Caster)'],answer:2,exp:'Toe-in은 타이어 앞쪽이 안으로 모인 상태. 직진 안정성 향상에 유리합니다.'},
+  {q:'O2 센서(산소 센서)의 역할은?',opts:['흡입 공기량 측정','배기가스 산소 농도 측정으로 공연비 피드백 제어','연료 압력 조절','냉각수 온도 감지'],answer:1,exp:'O2 센서는 배기가스 내 산소 농도를 측정하여 ECU가 공연비를 이론값(14.7:1)에 가깝게 제어하도록 합니다.'},
+  {q:'브레이크 오일(DOT 규격)을 주기적으로 교환해야 하는 주요 이유는?',opts:['색이 변하기 때문에','흡습성으로 수분 흡수 시 비등점이 낮아지기 때문에','냄새가 나기 때문에','점도가 높아지기 때문에'],answer:1,exp:'브레이크 오일은 흡습성이 있어 수분을 흡수하면 비등점이 낮아져 베이퍼 록(Vapor Lock)이 발생할 수 있습니다.'},
+  {q:'압축비가 높을수록 나타나는 현상으로 옳은 것은?',opts:['노킹 발생 가능성 감소','열효율 향상','냉각수 사용량 증가','흡입 효율 감소'],answer:1,exp:'압축비가 높을수록 열효율은 향상되지만 노킹 발생 가능성도 높아집니다.'},
+  {q:'워터 펌프(Water Pump)의 구동 방식으로 가장 일반적인 것은?',opts:['전기 모터','엔진 타이밍 벨트 또는 보조 벨트','유압','수압'],answer:1,exp:'워터 펌프는 대부분 엔진의 타이밍 벨트나 보조 구동 벨트(V-벨트)로 구동됩니다.'},
+  {q:'점화 코일(Ignition Coil)의 역할은?',opts:['저전압을 고전압으로 변환','고전압을 저전압으로 변환','연료를 기화','공기를 압축'],answer:0,exp:'점화 코일은 배터리의 12V를 수만V의 고전압으로 변환하여 스파크 플러그에 공급합니다.'},
+  {q:'CVT(Continuously Variable Transmission)의 특징은?',opts:['단계적 변속으로 반응이 빠름','벨트와 풀리로 무단 변속하여 부드러운 가속','클러치 조작이 필요함','토크 컨버터 사용'],answer:1,exp:'CVT는 가변 직경 풀리와 벨트를 이용해 단계 없이 무한대로 변속비를 조절합니다.'},
+  {q:'쇼크업소버(Shock Absorber)의 주요 역할은?',opts:['차체를 지지','스프링의 진동을 감쇠','제동력 발생','조향력 전달'],answer:1,exp:'쇼크업소버(댐퍼)는 스프링이 충격을 흡수한 후 발생하는 잔진동을 빠르게 감쇠시킵니다.'},
+];
+
+let examQuestions=[], examCurrentQ=0, examScore=0, examAnswered=false, examTimerInterval=null, examTimeLeft=0;
+
 function selectExamType(el){document.querySelectorAll('.exam-opt-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+
 function startExam(){
+  const countVal=parseInt(document.getElementById('exam-count').value);
+  const timeVal=parseInt(document.getElementById('exam-time').value);
+  // 문제 풀에서 랜덤 선택
+  const shuffled=[...examPool].sort(()=>Math.random()-0.5);
+  examQuestions=shuffled.slice(0,Math.min(countVal,shuffled.length));
+  examCurrentQ=0; examScore=0; examAnswered=false;
+  examTimeLeft=timeVal*60;
   document.getElementById('exam-lobby-screen').style.display='none';
-  document.getElementById('exam-result-screen').style.display='block';
-  const count=document.getElementById('exam-count').value;
-  const s=Math.floor(Math.random()*20)+70;
-  const total=parseInt(count);
-  document.getElementById('exam-score-display').textContent=s+'점';
-  document.getElementById('exam-detail-text').textContent=`${total}문항 중 ${Math.round(total*s/100)}문항 정답`;
+  document.getElementById('exam-question-screen').style.display='block';
+  document.getElementById('exam-result-screen').style.display='none';
+  renderExamQuestion();
+  startExamTimer();
 }
-function resetExam(){document.getElementById('exam-lobby-screen').style.display='block';document.getElementById('exam-result-screen').style.display='none';}
+
+function startExamTimer(){
+  clearInterval(examTimerInterval);
+  examTimerInterval=setInterval(()=>{
+    examTimeLeft--;
+    const m=Math.floor(examTimeLeft/60).toString().padStart(2,'0');
+    const s=(examTimeLeft%60).toString().padStart(2,'0');
+    const el=document.getElementById('exam-timer');
+    if(el)el.textContent=`${m}:${s}`;
+    if(examTimeLeft<=60&&el)el.style.color='var(--acc)';
+    if(examTimeLeft<=0){clearInterval(examTimerInterval);finishExam();}
+  },1000);
+}
+
+function renderExamQuestion(){
+  const q=examQuestions[examCurrentQ];
+  const total=examQuestions.length;
+  document.getElementById('exam-q-counter').textContent=`문제 ${examCurrentQ+1} / ${total}`;
+  document.getElementById('exam-q-num').textContent=`Q.${String(examCurrentQ+1).padStart(2,'0')}`;
+  document.getElementById('exam-q-text').textContent=q.q;
+  document.getElementById('exam-prog-bar').style.width=((examCurrentQ)/total*100)+'%';
+  document.getElementById('exam-q-result').className='quiz-result';
+  document.getElementById('exam-q-result').innerHTML='';
+  document.getElementById('exam-next-btn').disabled=true;
+  examAnswered=false;
+  const letters=['A','B','C','D'];
+  document.getElementById('exam-q-opts').innerHTML=q.opts.map((o,i)=>
+    `<button class="quiz-opt" onclick="selectExamOpt(this,${i})"><span class="opt-letter">${letters[i]}</span>${o}</button>`
+  ).join('');
+}
+
+function selectExamOpt(el,idx){
+  if(examAnswered)return; examAnswered=true;
+  const q=examQuestions[examCurrentQ];
+  document.querySelectorAll('#exam-q-opts .quiz-opt').forEach((o,i)=>{
+    o.disabled=true;
+    if(i===q.answer)o.classList.add('correct');
+    else if(i===idx&&idx!==q.answer)o.classList.add('wrong');
+  });
+  if(idx===q.answer){
+    examScore++;
+    document.getElementById('exam-q-result').className='quiz-result right show';
+    document.getElementById('exam-q-result').innerHTML='✅ 정답! '+q.exp;
+  } else {
+    document.getElementById('exam-q-result').className='quiz-result wrong show';
+    document.getElementById('exam-q-result').innerHTML='❌ 오답. '+q.exp;
+  }
+  const isLast=examCurrentQ===examQuestions.length-1;
+  const btn=document.getElementById('exam-next-btn');
+  btn.disabled=false;
+  btn.textContent=isLast?'결과 보기 🏁':'다음 문제 →';
+}
+
+function examNextQuestion(){
+  if(examCurrentQ<examQuestions.length-1){examCurrentQ++;renderExamQuestion();}
+  else{finishExam();}
+}
+
+function finishExam(){
+  clearInterval(examTimerInterval);
+  const total=examQuestions.length;
+  const pct=Math.round(examScore/total*100);
+  document.getElementById('exam-question-screen').style.display='none';
+  document.getElementById('exam-result-screen').style.display='block';
+  document.getElementById('exam-result-icon').textContent=pct>=90?'🏆':pct>=70?'👍':'📚';
+  document.getElementById('exam-score-display').textContent=pct+'점';
+  document.getElementById('exam-detail-text').textContent=`${total}문항 중 ${examScore}문항 정답`;
+}
+
+function confirmExitExam(){
+  if(confirm('시험을 종료하시겠습니까?')){clearInterval(examTimerInterval);resetExam();}
+}
+
+function resetExam(){
+  clearInterval(examTimerInterval);
+  document.getElementById('exam-lobby-screen').style.display='block';
+  document.getElementById('exam-question-screen').style.display='none';
+  document.getElementById('exam-result-screen').style.display='none';
+  const timer=document.getElementById('exam-timer');
+  if(timer){timer.textContent='40:00';timer.style.color='';}
+}
 
 // ============================================================
 // WRONG NOTE
