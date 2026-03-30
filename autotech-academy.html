@@ -230,17 +230,17 @@
     <h1>안녕하세요, 현규씨! 👋</h1>
     <p>오늘도 자동차 정비 마스터를 향해 달려볼까요?<br>아반떼 스포츠처럼 — 빠르고, 정확하게, 그리고 멋지게!</p>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="num">68%</div><div class="lbl">전체 진도</div></div>
-      <div class="hero-stat"><div class="num">142</div><div class="lbl">학습 포인트</div></div>
-      <div class="hero-stat"><div class="num">23</div><div class="lbl">퀴즈 통과</div></div>
-      <div class="hero-stat"><div class="num">15</div><div class="lbl">오답 복습</div></div>
+      <div class="hero-stat"><div class="num">0%</div><div class="lbl">전체 진도</div></div>
+      <div class="hero-stat"><div class="num">0</div><div class="lbl">학습 포인트</div></div>
+      <div class="hero-stat"><div class="num">0</div><div class="lbl">퀴즈 통과</div></div>
+      <div class="hero-stat"><div class="num">0</div><div class="lbl">오답 복습</div></div>
     </div>
   </div>
   <div class="stat-cards">
-    <div class="stat-card" onclick="showPage('study')"><div class="icon icon-red">📚</div><div class="info"><div class="title">학습 챕터</div><div class="value">8 / 12</div></div></div>
-    <div class="stat-card" onclick="showPage('quiz')"><div class="icon icon-blue">⚡</div><div class="info"><div class="title">오늘 퀴즈</div><div class="value">미완료</div></div></div>
-    <div class="stat-card" onclick="showPage('exam')"><div class="icon icon-gold">🏆</div><div class="info"><div class="title">최고 시험 점수</div><div class="value">82점</div></div></div>
-    <div class="stat-card" onclick="showPage('wrongnote')"><div class="icon icon-green">📋</div><div class="info"><div class="title">오답노트</div><div class="value">15문제</div></div></div>
+    <div class="stat-card" onclick="showPage('study')"><div class="icon icon-red">📚</div><div class="info"><div class="title">학습 챕터</div><div class="value">0 / 8</div></div></div>
+    <div class="stat-card" onclick="showPage('study')"><div class="icon icon-blue">⚡</div><div class="info"><div class="title">퀴즈 완료</div><div class="value">미완료</div></div></div>
+    <div class="stat-card" onclick="showPage('exam')"><div class="icon icon-gold">🏆</div><div class="info"><div class="title">최고 시험 점수</div><div class="value">-</div></div></div>
+    <div class="stat-card" onclick="showPage('wrongnote')"><div class="icon icon-green">📋</div><div class="info"><div class="title">오답노트</div><div class="value">0문제</div></div></div>
   </div>
   <div class="section-title">📚 전체 학습 챕터</div>
   <div class="chapter-grid" id="chapter-grid"></div>
@@ -408,15 +408,15 @@
 
 <script>
 const chapters=[
-  {num:'01',title:'엔진 기본 구조와 원리',prog:100,status:'✅ 완료',desc:'4행정 사이클, 피스톤 운동, 흡배기 시스템의 구조와 작동원리',
-   sections:[{title:'엔진 개요 및 분류',done:true},{title:'4행정 사이클',done:true},{title:'피스톤과 크랭크샤프트',done:true},{title:'흡배기 시스템',done:true},{title:'밸브 타이밍',done:true}],
+  {num:'01',title:'엔진 기본 구조와 원리',prog:0,status:'🔒 대기중',desc:'4행정 사이클, 피스톤 운동, 흡배기 시스템의 구조와 작동원리',
+   sections:[{title:'엔진 개요 및 분류',done:false},{title:'4행정 사이클',done:false},{title:'피스톤과 크랭크샤프트',done:false},{title:'흡배기 시스템',done:false},{title:'밸브 타이밍',done:false}],
    content:{title:'엔진 기본 구조와 원리',subtitle:'CHAPTER 01 · 완료',
     text:`<strong>내연기관(Internal Combustion Engine)</strong>은 연료를 엔진 내부에서 연소시켜 그 폭발력을 기계적 에너지로 변환하는 장치입니다.<br><br>현재 대부분의 자동차는 <strong>4행정 왕복 피스톤 엔진</strong>을 사용합니다. 4행정이란 피스톤이 <strong>흡입 → 압축 → 폭발(동력) → 배기</strong>의 4가지 행정을 반복하며 동력을 발생시키는 방식입니다.<br><br><strong>흡입 행정</strong>: 피스톤이 내려가며 혼합가스(공기+연료)를 흡입합니다.<br><strong>압축 행정</strong>: 피스톤이 올라가며 혼합가스를 압축합니다.<br><strong>폭발(동력) 행정</strong>: 점화플러그가 불꽃을 일으켜 폭발하며 피스톤을 강하게 밀어냅니다.<br><strong>배기 행정</strong>: 연소된 가스를 밖으로 내보냅니다.`,
     keyterms:[{name:'TDC (상사점)',def:'피스톤이 가장 높은 위치에 있을 때'},{name:'BDC (하사점)',def:'피스톤이 가장 낮은 위치에 있을 때'},{name:'압축비',def:'하사점 체적 / 상사점 체적 (가솔린 약 8~12:1)'},{name:'행정 (Stroke)',def:'상사점과 하사점 사이의 거리'}],
     info:'4행정 순서 암기법: "흡압폭배" (흡입→압축→폭발→배기)로 외우세요! 시험에 자주 출제됩니다.',
     warn:'압축 행정과 흡입 행정을 혼동하지 마세요. 피스톤이 올라가면서 가스를 압축하는 것이 압축 행정입니다.'}},
-  {num:'02',title:'냉각 및 윤활 시스템',prog:65,status:'🔄 학습중',desc:'엔진 냉각수 순환, 오일 압력, 윤활 경로 및 필터 관리',
-   sections:[{title:'냉각 시스템 개요',done:true},{title:'냉각수 순환 경로',done:false},{title:'서모스탯 작동 원리',done:false},{title:'윤활 시스템 개요',done:false},{title:'오일 펌프와 필터',done:false},{title:'오일 점도와 규격',done:false},{title:'과열 및 과냉 진단',done:false}],
+  {num:'02',title:'냉각 및 윤활 시스템',prog:0,status:'🔒 대기중',desc:'엔진 냉각수 순환, 오일 압력, 윤활 경로 및 필터 관리',
+   sections:[{title:'냉각 시스템 개요',done:false},{title:'냉각수 순환 경로',done:false},{title:'서모스탯 작동 원리',done:false},{title:'윤활 시스템 개요',done:false},{title:'오일 펌프와 필터',done:false},{title:'오일 점도와 규격',done:false},{title:'과열 및 과냉 진단',done:false}],
    content:{title:'냉각 시스템 개요',subtitle:'CHAPTER 02 · SECTION 01 · 예상시간 15분',
     text:`<strong>냉각 시스템(Cooling System)</strong>은 엔진 작동 중 발생하는 열을 외부로 방출하여 엔진을 <strong>적정 온도(85~95°C)</strong>로 유지하는 시스템입니다.<br><br>엔진이 연료를 연소시킬 때 발생하는 열의 약 30%는 동력으로 변환되고, 나머지 70% 중 상당 부분이 냉각 시스템을 통해 방출됩니다.<br><br>냉각 방식에는 <strong>수냉식(Water Cooling)</strong>과 공냉식(Air Cooling)이 있으며, 현대 자동차는 대부분 수냉식을 사용합니다.`,
     keyterms:[{name:'라디에이터 (Radiator)',def:'냉각수의 열을 외부 공기로 방출하는 열교환기'},{name:'워터 펌프 (Water Pump)',def:'냉각수를 강제 순환시키는 펌프. 보통 벨트로 구동'},{name:'서모스탯 (Thermostat)',def:'수온에 따라 열리고 닫히며 냉각수 흐름 조절'},{name:'부동액 (Antifreeze)',def:'냉각수 어는점을 낮추고 부식을 방지하는 첨가제'}],
@@ -425,8 +425,8 @@ const chapters=[
   {num:'03',title:'연료 및 점화 시스템',prog:0,status:'🔒 대기중',desc:'연료 분사 방식, 점화 타이밍, 스파크 플러그와 고압 코일',
    sections:[{title:'연료 공급 시스템',done:false},{title:'GDI 직분사 방식',done:false},{title:'점화장치 구조',done:false},{title:'스파크 플러그',done:false}],
    content:{title:'연료 및 점화 시스템',subtitle:'CHAPTER 03',text:'연료 시스템은 연료 탱크로부터 연료를 흡입하여 엔진에 공급하는 역할을 합니다.<br><br><strong>연료 펌프</strong>가 연료를 가압하여 인젝터로 보내고, <strong>인젝터</strong>가 연료를 미세하게 분사합니다. <strong>점화 시스템</strong>은 압축된 혼합가스에 불꽃을 일으켜 연소가 일어나도록 합니다.',keyterms:[{name:'연료 펌프',def:'연료 탱크의 연료를 가압하여 인젝터로 공급'},{name:'인젝터',def:'연료를 미세하게 분사하는 전자식 밸브'},{name:'점화 코일',def:'저전압을 고전압으로 변환하는 장치'},{name:'스파크 플러그',def:'고전압 전기 불꽃으로 혼합가스 점화'}],info:'점화 순서(점화 타이밍)는 엔진 성능에 매우 중요합니다. 시험 빈출!',warn:''}},
-  {num:'04',title:'전기 및 전자 시스템',prog:30,status:'📡 진행중',desc:'배터리, 발전기, 스타터모터, 센서류, ECU 기초',
-   sections:[{title:'배터리 구조와 원리',done:true},{title:'발전기 (알터네이터)',done:true},{title:'스타터 모터',done:false},{title:'센서류 개요',done:false},{title:'ECU 기초',done:false}],
+  {num:'04',title:'전기 및 전자 시스템',prog:0,status:'🔒 대기중',desc:'배터리, 발전기, 스타터모터, 센서류, ECU 기초',
+   sections:[{title:'배터리 구조와 원리',done:false},{title:'발전기 (알터네이터)',done:false},{title:'스타터 모터',done:false},{title:'센서류 개요',done:false},{title:'ECU 기초',done:false}],
    content:{title:'전기 및 전자 시스템',subtitle:'CHAPTER 04',text:'자동차 전기 시스템의 핵심은 <strong>배터리(Battery)</strong>, <strong>발전기(Alternator)</strong>, <strong>스타터 모터(Starter Motor)</strong>의 3요소입니다.<br><br>배터리는 시동 시 전기를 공급하고, 발전기는 엔진 구동 중 전기를 생산하여 배터리를 충전합니다. 스타터 모터는 배터리 전력으로 엔진을 최초 구동시킵니다.',keyterms:[{name:'배터리',def:'12V(완전충전 12.6~12.8V) 납산 축전지'},{name:'알터네이터',def:'엔진 구동으로 교류 전기를 발생시키는 발전기'},{name:'스타터 모터',def:'배터리 전력으로 엔진 크랭크샤프트를 회전시킴'},{name:'ECU',def:'엔진 제어 컴퓨터 — 각종 센서 신호를 분석하여 엔진 제어'}],info:'배터리 완전 충전 전압은 12.6~12.8V, 방전 시 11.8V 이하입니다. 시험 빈출!',warn:'배터리 역접속(+/- 반대 연결) 시 ECU, 퓨즈, 다이오드가 즉시 손상됩니다!'}},
   {num:'05',title:'제동 및 조향 시스템',prog:0,status:'🔒 대기중',desc:'디스크/드럼 브레이크 구조, ABS, 파워스티어링 원리',
    sections:[{title:'디스크 브레이크',done:false},{title:'드럼 브레이크',done:false},{title:'ABS 원리',done:false},{title:'파워스티어링',done:false}],
@@ -442,21 +442,51 @@ const chapters=[
    content:{title:'변속기 (MT/AT/CVT)',subtitle:'CHAPTER 08',text:'변속기는 엔진의 동력을 주행 상황에 맞게 토크와 속도를 변환하여 구동축으로 전달합니다.<br><br><strong>수동변속기(MT)</strong>: 클러치와 기어를 수동으로 조작. 구조 단순, 연비 우수.<br><strong>자동변속기(AT)</strong>: 토크 컨버터와 유성기어 세트로 자동 변속.<br><strong>CVT</strong>: 벨트와 풀리로 무단 변속, 부드러운 가속.',keyterms:[{name:'클러치',def:'엔진과 변속기 사이 동력 단속 장치'},{name:'토크 컨버터',def:'AT에서 유체를 이용한 동력 전달 및 증폭 장치'},{name:'유성기어',def:'AT의 핵심 — 선기어, 링기어, 유성기어, 캐리어'},{name:'CVT 풀리',def:'가변 직경 풀리로 무단 변속 구현'}],info:'토크 컨버터의 스톨 토크비(2.0~2.5:1)는 시험 빈출입니다!',warn:''}},
 ];
 
-const wrongNotes=[
-  {q:'엔진의 4행정 사이클에서 혼합가스를 압축하는 행정은?',myAns:'흡입 행정',correct:'압축 행정 (2행정)',count:3,chapter:'엔진 구조',memo:'4행정 순서는 흡입→압축→폭발(동력)→배기입니다. 피스톤이 상사점으로 올라가며 혼합가스를 압축합니다.'},
-  {q:'라디에이터 캡의 주요 역할로 올바른 것은?',myAns:'냉각수 누수 방지만',correct:'냉각계통 압력 조절',count:2,chapter:'냉각/윤활',memo:'라디에이터 캡은 냉각 시스템의 압력을 일정하게 유지합니다. 규정값(0.9~1.1 kgf/㎠) 초과 시 열려 압력을 방출합니다.'},
-  {q:'전기회로에서 전류가 흐르지 않는 상태를 무엇이라 하는가?',myAns:'단락 (Short)',correct:'단선 (Open Circuit)',count:1,chapter:'전기 시스템',memo:'단선(Open Circuit): 회로가 끊어져 전류가 흐르지 않는 상태. 단락(Short Circuit): 전선이 접촉하여 과전류가 흐르는 상태. 혼동 주의!'},
-  {q:'엔진 오일의 점도 표시 "5W-30"에서 "W"가 의미하는 것은?',myAns:'Warm (따뜻함)',correct:'Winter (겨울용)',count:3,chapter:'냉각/윤활',memo:'W는 Winter의 약자입니다. 앞 숫자(5W)는 저온 점도, 뒤 숫자(30)는 고온 점도를 나타냅니다.'},
-  {q:'자동차 배터리의 완전 충전 전압은 약 몇 V인가?',myAns:'12V',correct:'12.6V ~ 12.8V',count:2,chapter:'전기 시스템',memo:'완전 충전 시 12.6~12.8V, 방전 시 11.8V 이하입니다. 정확한 숫자로 외워두세요!'},
-];
+let wrongNotes=[];
 
-const quizData=[
-  {q:'엔진의 냉각 시스템에서 냉각수의 온도를 조절하여 적정 온도를 유지시켜 주는 부품은?',opts:['워터 펌프','라디에이터','서모스탯','냉각 팬'],answer:2,exp:'서모스탯은 수온에 따라 밸브가 열리고 닫혀 냉각수 흐름을 조절합니다. 약 80~85°C에서 열리기 시작합니다.'},
-  {q:'4행정 기관의 행정 순서로 옳은 것은?',opts:['흡입→폭발→압축→배기','흡입→압축→폭발→배기','압축→흡입→폭발→배기','흡입→압축→배기→폭발'],answer:1,exp:'4행정 순서: 흡입 → 압축 → 폭발(동력) → 배기. "흡압폭배"로 외우세요!'},
-  {q:'엔진 오일의 점도 표시 "5W-30"에서 앞의 "5W"가 의미하는 것은?',opts:['고온에서의 점도','Winter(저온) 점도','오일의 등급','점도 인덱스'],answer:1,exp:'W는 Winter의 약자로 저온(겨울)에서의 오일 점도를 나타냅니다. 숫자가 낮을수록 추운 날씨에서도 잘 흐릅니다.'},
-  {q:'자동차 배터리의 (+)와 (-)를 반대로 연결했을 때 가장 먼저 손상될 수 있는 것은?',opts:['타이어','다이오드, 퓨즈, ECU 등 전자부품','브레이크 패드','서스펜션 부품'],answer:1,exp:'역접속(역극성) 시 과전류가 흘러 다이오드, 퓨즈, ECU 등 전자 부품이 즉시 손상됩니다. 항상 (+)극 먼저 연결하세요!'},
-  {q:'디스크 브레이크에서 제동력을 발생시키는 부품이 아닌 것은?',opts:['캘리퍼','브레이크 패드','디스크 로터','드럼'],answer:3,exp:'드럼은 드럼 브레이크의 부품입니다. 디스크 브레이크의 주요 부품은 디스크 로터(원판), 캘리퍼(집게), 브레이크 패드(마찰재)입니다.'},
-];
+// 챕터별 고정 퀴즈 문제 (3개씩)
+const chapterQuizData={
+  0:[
+    {q:'4행정 기관의 행정 순서로 옳은 것은?',opts:['흡입→폭발→압축→배기','흡입→압축→폭발→배기','압축→흡입→폭발→배기','흡입→압축→배기→폭발'],answer:1,exp:'흡입→압축→폭발(동력)→배기. "흡압폭배"로 암기!'},
+    {q:'피스톤이 가장 높은 위치에 있을 때를 무엇이라 하는가?',opts:['하사점(BDC)','상사점(TDC)','중립점','행정점'],answer:1,exp:'TDC(Top Dead Center)=상사점, BDC(Bottom Dead Center)=하사점'},
+    {q:'가솔린 엔진의 압축비로 일반적인 범위는?',opts:['4~6:1','8~12:1','15~22:1','25~30:1'],answer:1,exp:'가솔린 엔진 압축비는 약 8~12:1, 디젤 엔진은 15~22:1입니다.'},
+  ],
+  1:[
+    {q:'엔진 냉각수의 적정 작동 온도 범위는?',opts:['60~70°C','75~80°C','85~95°C','100~110°C'],answer:2,exp:'엔진 적정 온도는 85~95°C입니다. 수온계가 이 범위를 벗어나면 즉시 점검!'},
+    {q:'라디에이터 캡의 주요 역할은?',opts:['냉각수 색상 유지','냉각계통 압력 조절','냉각 팬 제어','수온 센서 보호'],answer:1,exp:'라디에이터 캡은 냉각계통 압력을 일정하게 유지하고, 초과 시 압력을 방출합니다.'},
+    {q:'엔진 오일 점도 "5W-30"에서 "W"의 의미는?',opts:['Warm(따뜻함)','Wet(습도)','Winter(겨울)','Weight(무게)'],answer:2,exp:'W는 Winter의 약자. 앞 숫자(5W)=저온 점도, 뒤 숫자(30)=고온 점도'},
+  ],
+  2:[
+    {q:'연료 인젝터(Injector)의 역할은?',opts:['연료를 가압','연료를 미세하게 분사','공기를 흡입','점화 신호 생성'],answer:1,exp:'인젝터는 ECU 신호에 따라 연료를 미세하게 분사하는 전자식 밸브입니다.'},
+    {q:'점화 코일의 역할은?',opts:['저전압을 고전압으로 변환','고전압을 저전압으로 변환','연료를 기화','공기를 압축'],answer:0,exp:'점화 코일은 배터리 12V를 수만V 고전압으로 변환해 스파크 플러그에 공급합니다.'},
+    {q:'GDI(직접 분사) 방식의 특징은?',opts:['흡기 포트에 분사','연소실에 직접 분사','카뷰레터 방식','기화기 방식'],answer:1,exp:'GDI는 연료를 실린더 연소실에 직접 분사해 연비와 출력이 향상됩니다.'},
+  ],
+  3:[
+    {q:'자동차 배터리 완전 충전 전압은?',opts:['11.8V','12.0V','12.6~12.8V','13.5V'],answer:2,exp:'완전 충전 시 12.6~12.8V, 방전 시 11.8V 이하. 정확한 숫자로 암기!'},
+    {q:'알터네이터(발전기)의 역할은?',opts:['연료 공급','엔진 구동 중 전기 생산 및 배터리 충전','냉각수 순환','점화 신호 생성'],answer:1,exp:'알터네이터는 엔진 구동 중 교류 전기를 발생시켜 배터리를 충전합니다.'},
+    {q:'배터리 역접속(+/- 반대 연결) 시 가장 먼저 손상되는 것은?',opts:['타이어','다이오드·퓨즈·ECU 등 전자부품','브레이크 패드','서스펜션'],answer:1,exp:'역접속 시 과전류로 다이오드, 퓨즈, ECU 등 전자부품이 즉시 손상됩니다!'},
+  ],
+  4:[
+    {q:'ABS(Anti-lock Braking System)의 주요 목적은?',opts:['제동 거리 단축','급제동 시 바퀴 잠김 방지','연비 향상','엔진 보호'],answer:1,exp:'ABS는 급제동 시 바퀴 잠김을 방지해 조향 능력을 유지시킵니다.'},
+    {q:'디스크 브레이크 구성 부품이 아닌 것은?',opts:['캘리퍼','브레이크 패드','디스크 로터','드럼'],answer:3,exp:'드럼은 드럼 브레이크의 부품. 디스크 브레이크=캘리퍼+패드+로터'},
+    {q:'브레이크 오일을 주기적으로 교환해야 하는 이유는?',opts:['색이 변하기 때문','흡습성으로 비등점이 낮아지기 때문','냄새가 나기 때문','점도가 높아지기 때문'],answer:1,exp:'브레이크 오일은 수분 흡수 시 비등점이 낮아져 베이퍼 록이 발생할 수 있습니다.'},
+  ],
+  5:[
+    {q:'맥퍼슨 스트럿이 주로 사용되는 위치는?',opts:['대형 트럭 후륜','소형차 전륜','스포츠카 후륜','버스 전륜'],answer:1,exp:'맥퍼슨 스트럿은 구조 단순·공간 효율이 좋아 소형차 전륜에 많이 사용됩니다.'},
+    {q:'타이어를 위에서 봤을 때 앞쪽이 안으로 모인 상태는?',opts:['토 아웃(Toe-out)','캠버(Camber)','토 인(Toe-in)','캐스터(Caster)'],answer:2,exp:'Toe-in은 타이어 앞쪽이 안으로 모인 상태. 직진 안정성에 유리합니다.'},
+    {q:'쇼크업소버의 역할은?',opts:['차체 지지','스프링 진동 감쇠','제동력 발생','조향력 전달'],answer:1,exp:'쇼크업소버(댐퍼)는 스프링이 충격 흡수 후 발생하는 잔진동을 빠르게 감쇠시킵니다.'},
+  ],
+  6:[
+    {q:'가솔린 엔진의 이론 공연비(람다=1)는?',opts:['12.5:1','14.7:1','16.0:1','18.0:1'],answer:1,exp:'이론 공연비 14.7:1은 완전연소를 위한 최적 공기:연료 비율입니다.'},
+    {q:'O2 센서의 역할은?',opts:['흡입 공기량 측정','배기가스 산소 농도 측정으로 공연비 피드백','연료 압력 조절','냉각수 온도 감지'],answer:1,exp:'O2 센서는 배기가스 산소 농도를 측정해 ECU가 공연비를 14.7:1로 유지하도록 피드백합니다.'},
+    {q:'TPS(Throttle Position Sensor)가 감지하는 것은?',opts:['냉각수 온도','스로틀(가속 페달) 위치','연료 압력','배기가스 온도'],answer:1,exp:'TPS는 스로틀 밸브 개도(가속 페달 위치)를 감지해 ECU에 전달합니다.'},
+  ],
+  7:[
+    {q:'토크 컨버터가 사용되는 변속기는?',opts:['수동변속기(MT)','CVT','자동변속기(AT)','DCT'],answer:2,exp:'토크 컨버터는 자동변속기(AT)에서 클러치 역할을 하는 유체 동력 전달 장치입니다.'},
+    {q:'CVT의 특징은?',opts:['단계적 변속','벨트와 풀리로 무단 변속','클러치 수동 조작 필요','토크 컨버터 사용'],answer:1,exp:'CVT는 가변 직경 풀리와 벨트로 무단 변속해 부드러운 가속을 구현합니다.'},
+    {q:'수동변속기(MT)의 특징으로 옳은 것은?',opts:['유성기어 세트 사용','클러치 조작 불필요','구조 단순·연비 우수','토크 컨버터 필수'],answer:2,exp:'수동변속기는 구조가 단순하고 동력 전달 효율이 높아 연비가 우수합니다.'},
+  ],
+};
 
 // ============================================================
 // NAVIGATION
@@ -466,7 +496,7 @@ function showPage(page){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.getElementById('nav-'+page).classList.add('active');
-  if(page==='quiz')renderQuizQuestion();
+  if(page==='wrongnote')renderWrongNotes();
 }
 
 function renderChapters(){
@@ -501,6 +531,7 @@ function loadSection(el){
 
 function renderStudyContent(ch){
   const c=ch.content;
+  const idx=chapters.indexOf(ch);
   const ttsRaw=c.text.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   document.getElementById('study-content-area').innerHTML=`
     <div class="study-title">${c.title}</div>
@@ -524,11 +555,13 @@ function renderStudyContent(ch){
       <div class="key-terms">${c.keyterms.map(t=>`<div class="key-term"><div class="kt-name">${t.name}</div><div class="kt-def">${t.def}</div></div>`).join('')}</div>
     `:''}
     <div class="study-actions">
-      <button class="btn btn-primary" onclick="showPage('quiz')">⚡ 퀴즈 풀기</button>
+      <button class="btn btn-primary" onclick="startChapterQuiz(${idx})">⚡ 챕터 퀴즈 풀기</button>
       <button class="btn btn-ghost" onclick="showPage('ai')">🤖 AI에게 질문하기</button>
     </div>
   `;
   window._ttsRaw=ttsRaw;
+  // 챕터 진도 업데이트
+  markChapterStudied(idx);
 }
 
 // ============================================================
@@ -555,66 +588,179 @@ function toggleTTS(){
 // ============================================================
 // QUIZ
 // ============================================================
-let currentQ=0,score=0,answered=false;
+let quizChapterIdx=0, quizQuestions=[], currentQ=0, quizScore=0, quizAnswered=false;
 const letters=['A','B','C','D'];
-const hints=['라디에이터는 방열, 워터펌프는 순환, 그럼 온도 조절은?','흡입 후에 반드시 필요한 과정은? 연소 전 준비 단계!','알파벳 W → Winter!','전자 부품은 역전류에 매우 취약합니다','드럼이라는 단어 자체에 힌트가 있습니다'];
+
+function startChapterQuiz(chIdx){
+  quizChapterIdx=chIdx;
+  quizQuestions=[...(chapterQuizData[chIdx]||[])];
+  currentQ=0; quizScore=0; quizAnswered=false;
+  showPage('quiz');
+  renderQuizHeader();
+  renderQuizQuestion();
+}
+
+function renderQuizHeader(){
+  const ch=chapters[quizChapterIdx];
+  document.getElementById('qprog-text').textContent=`1 / ${quizQuestions.length}`;
+  document.getElementById('score-display').textContent='정답 0개';
+  document.getElementById('score-display').className='score-badge good';
+  // 상단에 챕터 이름 표시
+  let titleEl=document.getElementById('quiz-chapter-title');
+  if(!titleEl){
+    const container=document.querySelector('.quiz-container');
+    const div=document.createElement('div');
+    div.id='quiz-chapter-title';
+    div.style.cssText='font-size:13px;color:var(--acc3);margin-bottom:8px;letter-spacing:1px';
+    container.insertBefore(div,container.firstChild);
+  }
+  document.getElementById('quiz-chapter-title').textContent=`📖 CHAPTER ${ch.num} · ${ch.title}`;
+}
 
 function renderQuizQuestion(){
-  const q=quizData[currentQ];
-  document.getElementById('qprog').style.width=((currentQ+1)/quizData.length*100)+'%';
-  document.getElementById('qprog-text').textContent=`${currentQ+1} / ${quizData.length}`;
+  if(currentQ>=quizQuestions.length){showQuizResult();return;}
+  const q=quizQuestions[currentQ];
+  const total=quizQuestions.length;
+  document.getElementById('qprog').style.width=((currentQ+1)/total*100)+'%';
+  document.getElementById('qprog-text').textContent=`${currentQ+1} / ${total}`;
+  // AI 생성 문제 표시
+  const isAI=q.isAI===true;
   document.getElementById('quiz-area').innerHTML=`
-    <div class="quiz-card" id="quiz-card">
-      <div class="quiz-q"><span class="q-num">Q.0${currentQ+1}</span>${q.q}</div>
-      <div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="selectOpt(this,${i})"><span class="opt-letter">${letters[i]}</span>${o}</button>`).join('')}</div>
+    <div class="quiz-card">
+      <div class="quiz-q">
+        <span class="q-num">Q.${String(currentQ+1).padStart(2,'0')} ${isAI?'<span style="font-size:10px;background:rgba(0,210,255,0.15);border:1px solid rgba(0,210,255,0.3);border-radius:4px;padding:1px 6px;color:var(--acc3);margin-left:4px">🤖 AI</span>':''}</span>
+        ${q.q}
+      </div>
+      <div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="selectQuizOpt(this,${i})"><span class="opt-letter">${letters[i]}</span>${o}</button>`).join('')}</div>
       <div class="quiz-result" id="quiz-result"></div>
       <div class="quiz-nav">
         <button class="btn btn-secondary" id="hint-btn" onclick="showQuizHint()">💡 힌트</button>
-        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>다음 문제 →</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQuizQuestion()" disabled>${currentQ===quizQuestions.length-1?'결과 보기 🏁':'다음 문제 →'}</button>
       </div>
     </div>`;
-  answered=false;
+  quizAnswered=false;
 }
 
-function selectOpt(el,idx){
-  if(answered)return;answered=true;
-  const q=quizData[currentQ];
+function selectQuizOpt(el,idx){
+  if(quizAnswered)return; quizAnswered=true;
+  const q=quizQuestions[currentQ];
   document.querySelectorAll('.quiz-opt').forEach((o,i)=>{
     o.disabled=true;
     if(i===q.answer)o.classList.add('correct');
     else if(i===idx&&idx!==q.answer)o.classList.add('wrong');
   });
-  if(idx===q.answer){score++;document.getElementById('quiz-result').className='quiz-result right show';document.getElementById('quiz-result').innerHTML='✅ 정답입니다! '+q.exp;}
-  else{document.getElementById('quiz-result').className='quiz-result wrong show';document.getElementById('quiz-result').innerHTML='❌ 오답입니다. '+q.exp;}
-  document.getElementById('score-display').textContent=`정답 ${score}개`;
-  document.getElementById('score-display').className=`score-badge ${score/(currentQ+1)>=0.6?'good':'bad'}`;
+  const correct=idx===q.answer;
+  if(correct){
+    quizScore++;
+    document.getElementById('quiz-result').className='quiz-result right show';
+    document.getElementById('quiz-result').innerHTML='✅ 정답입니다! '+q.exp;
+  } else {
+    document.getElementById('quiz-result').className='quiz-result wrong show';
+    document.getElementById('quiz-result').innerHTML='❌ 오답입니다. '+q.exp;
+    // 오답 저장
+    saveWrongAnswer(q, q.opts[idx], q.opts[q.answer], chapters[quizChapterIdx].title);
+  }
+  document.getElementById('score-display').textContent=`정답 ${quizScore}개`;
+  document.getElementById('score-display').className=`score-badge ${quizScore/(currentQ+1)>=0.6?'good':'bad'}`;
   document.getElementById('next-btn').disabled=false;
   document.getElementById('hint-btn').style.display='none';
 }
 
 function showQuizHint(){
+  const q=quizQuestions[currentQ];
   const res=document.getElementById('quiz-result');
   res.className='quiz-result hint show';
-  res.innerHTML='💡 힌트: '+(hints[currentQ]||'천천히 생각해보세요!');
+  res.innerHTML='💡 힌트: '+(q.hint||'천천히 보기를 다시 읽어보세요!');
 }
 
-function nextQuestion(){
-  if(currentQ<quizData.length-1){currentQ++;renderQuizQuestion();}
-  else{
-    const pct=Math.round(score/quizData.length*100);
-    document.getElementById('quiz-area').innerHTML=`
-      <div style="text-align:center;padding:40px;background:var(--card);border-radius:12px">
-        <div style="font-size:56px;margin-bottom:16px">${pct>=80?'🏆':pct>=60?'👍':'📚'}</div>
-        <div style="font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--acc2);margin-bottom:8px">${pct}점</div>
-        <div style="color:var(--txt2);font-size:14px;margin-bottom:24px">${quizData.length}문제 중 ${score}문제 정답!</div>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="resetQuiz()">🔄 다시 풀기</button>
-          <button class="btn btn-secondary" onclick="showPage('wrongnote')">📋 오답 보기</button>
-        </div>
-      </div>`;
+function nextQuizQuestion(){
+  if(currentQ<quizQuestions.length-1){
+    currentQ++;
+    // 고정 문제 다 끝나고 AI 문제 아직 없으면 생성
+    const staticCount=(chapterQuizData[quizChapterIdx]||[]).length;
+    if(currentQ===staticCount && quizQuestions.length===staticCount){
+      fetchAIQuizQuestions();
+      return;
+    }
+    renderQuizQuestion();
+  } else {
+    showQuizResult();
   }
 }
-function resetQuiz(){currentQ=0;score=0;answered=false;renderQuizQuestion();}
+
+async function fetchAIQuizQuestions(){
+  const apiKey=getApiKey();
+  const ch=chapters[quizChapterIdx];
+  // 로딩 표시
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="quiz-card" style="text-align:center;padding:40px">
+      <div style="font-size:36px;margin-bottom:16px">🤖</div>
+      <div style="font-family:var(--font-display);font-size:16px;color:var(--acc3);margin-bottom:8px">AI 문제 생성 중...</div>
+      <div style="font-size:13px;color:var(--txt2)">${ch.title} 챕터 맞춤 문제를 만들고 있어요!</div>
+      <div style="margin-top:16px"><span class="typing-dots"><span></span><span></span><span></span></span></div>
+    </div>`;
+
+  if(!apiKey){
+    // API 키 없으면 바로 결과
+    showQuizResult();
+    return;
+  }
+  try{
+    const resp=await fetch('https://api.x.ai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+      body:JSON.stringify({
+        model:'grok-3',
+        max_tokens:800,
+        messages:[
+          {role:'system',content:'자동차 정비 시험 문제 출제자입니다. JSON만 응답하세요.'},
+          {role:'user',content:`"${ch.title}" 챕터 내용(${ch.desc})을 바탕으로 4지선다 문제 2개를 만들어주세요.
+반드시 아래 JSON 배열 형식만 출력하세요 (설명 없이):
+[{"q":"문제","opts":["보기1","보기2","보기3","보기4"],"answer":정답인덱스(0~3),"exp":"해설"}]`}
+        ]
+      })
+    });
+    if(resp.ok){
+      const data=await resp.json();
+      const raw=data.choices[0].message.content||'';
+      const match=raw.match(/\[[\s\S]*\]/);
+      if(match){
+        const aiQs=JSON.parse(match[0]);
+        aiQs.forEach(q=>{q.isAI=true;quizQuestions.push(q);});
+      }
+    }
+  }catch(e){}
+  renderQuizQuestion();
+}
+
+function showQuizResult(){
+  const total=quizQuestions.length;
+  const pct=Math.round(quizScore/total*100);
+  const chIdx=quizChapterIdx;
+  const nextIdx=chIdx+1;
+  const hasNext=nextIdx<chapters.length;
+  // 챕터 완료 처리
+  markChapterQuizDone(chIdx, pct);
+  document.getElementById('quiz-area').innerHTML=`
+    <div style="text-align:center;padding:40px;background:var(--card);border-radius:12px">
+      <div style="font-size:56px;margin-bottom:16px">${pct>=80?'🏆':pct>=60?'👍':'📚'}</div>
+      <div style="font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--acc2);margin-bottom:8px">${pct}점</div>
+      <div style="color:var(--txt2);font-size:14px;margin-bottom:6px">${total}문제 중 ${quizScore}문제 정답!</div>
+      <div style="color:var(--txt3);font-size:12px;margin-bottom:24px">오답 ${total-quizScore}문제가 오답노트에 저장됐어요</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="startChapterQuiz(${chIdx})">🔄 다시 풀기</button>
+        <button class="btn btn-secondary" onclick="showPage('wrongnote')">📋 오답노트</button>
+        ${hasNext?`<button class="btn btn-primary" onclick="showStudy(${nextIdx})">다음 챕터 →</button>`:''}
+      </div>
+    </div>`;
+}
+
+function saveWrongAnswer(q, myAns, correctAns, chapterTitle){
+  const exists=wrongNotes.findIndex(n=>n.q===q.q);
+  if(exists>=0){wrongNotes[exists].count++;}
+  else{wrongNotes.push({q:q.q,myAns,correct:correctAns,count:1,chapter:chapterTitle,memo:q.exp});}
+  updateWrongNoteFilters();
+}
 
 // ============================================================
 // EXAM
@@ -748,10 +894,67 @@ function resetExam(){
 }
 
 // ============================================================
+// PROGRESS TRACKING
+// ============================================================
+function markChapterStudied(idx){
+  if(chapters[idx].prog===0){
+    chapters[idx].prog=30;
+    chapters[idx].status='🔄 학습중';
+  }
+  updateDashboard();
+}
+
+function markChapterQuizDone(idx, pct){
+  chapters[idx].prog=pct>=80?100:Math.max(chapters[idx].prog, 60);
+  if(pct>=80){chapters[idx].status='✅ 완료';}
+  else{chapters[idx].status='🔄 학습중';}
+  updateDashboard();
+  renderChapters();
+}
+
+function updateDashboard(){
+  const total=chapters.length;
+  const done=chapters.filter(c=>c.prog===100).length;
+  const avgProg=Math.round(chapters.reduce((s,c)=>s+c.prog,0)/total);
+  const quizPassed=chapters.filter(c=>c.prog>=80).length;
+  // hero stats
+  const els={prog:document.querySelector('.hero-stat:nth-child(1) .num'),pt:document.querySelector('.hero-stat:nth-child(2) .num'),quiz:document.querySelector('.hero-stat:nth-child(3) .num'),wn:document.querySelector('.hero-stat:nth-child(4) .num')};
+  if(els.prog)els.prog.textContent=avgProg+'%';
+  if(els.pt)els.pt.textContent=quizPassed*30;
+  if(els.quiz)els.quiz.textContent=quizPassed;
+  if(els.wn)els.wn.textContent=wrongNotes.length;
+  // stat cards
+  const chCard=document.querySelector('.stat-card:nth-child(1) .value');
+  const wnCard=document.querySelector('.stat-card:nth-child(4) .value');
+  if(chCard)chCard.textContent=`${done} / ${total}`;
+  if(wnCard)wnCard.textContent=wrongNotes.length+'문제';
+  // 퀴즈 카드
+  const quizCard=document.querySelector('.stat-card:nth-child(2) .value');
+  if(quizCard)quizCard.textContent=quizPassed>0?quizPassed+'개 완료':'미완료';
+}
+
+function updateWrongNoteFilters(){
+  const filters=document.querySelectorAll('.wn-filter');
+  if(filters[0])filters[0].textContent=`전체 (${wrongNotes.length})`;
+  const three=wrongNotes.filter(n=>n.count>=3).length;
+  filters.forEach(f=>{if(f.textContent.startsWith('3회'))f.textContent=`3회 이상 틀림 (${three})`;});
+}
+
+// ============================================================
 // WRONG NOTE
 // ============================================================
 function renderWrongNotes(){
-  document.getElementById('wrongnote-list').innerHTML=wrongNotes.map(n=>`
+  let filter='전체';
+  const active=document.querySelector('.wn-filter.active');
+  if(active)filter=active.textContent.replace(/\s*\(\d+\)/,'').trim();
+  let list=wrongNotes;
+  if(filter==='3회 이상 틀림')list=wrongNotes.filter(n=>n.count>=3);
+  else if(filter!=='전체')list=wrongNotes.filter(n=>n.chapter&&n.chapter.includes(filter));
+  if(list.length===0){
+    document.getElementById('wrongnote-list').innerHTML=`<div style="text-align:center;padding:60px;color:var(--txt3);font-size:14px">🎉 오답이 없어요! 계속 학습해주세요</div>`;
+    return;
+  }
+  document.getElementById('wrongnote-list').innerHTML=list.map(n=>`
     <div class="wn-item">
       <div class="wn-header"><div class="wn-q">${n.q}</div><div class="wn-tag">⚠️ ${n.count}회 틀림</div></div>
       <div class="wn-answers">
@@ -762,7 +965,11 @@ function renderWrongNotes(){
     </div>
   `).join('');
 }
-function filterWN(el){document.querySelectorAll('.wn-filter').forEach(f=>f.classList.remove('active'));el.classList.add('active');}
+function filterWN(el){
+  document.querySelectorAll('.wn-filter').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  renderWrongNotes();
+}
 
 // ============================================================
 // AI CHAT — Grok API
@@ -848,9 +1055,7 @@ function askQuick(text){document.getElementById('chat-input').value=text;sendCha
 // INIT
 // ============================================================
 renderChapters();
-renderWrongNotes();
-renderQuizQuestion();
-showStudy(1);
+updateDashboard();
 showPage('dashboard');
 </script>
 </body>
