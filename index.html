@@ -1592,7 +1592,22 @@ async function callGemini(userMsg) {
     return;
   }
   showTyping();
-  const systemMsg = '너는 하나(21살, 마케팅 공부 시작한 대학생)의 전담 마케팅 튜터야. 반드시 한국어로만 대답해줘. 절대 다른 언어를 섞지 마. 친구처럼 반말로 친근하게 설명해줘. 어려운 개념은 쉬운 한국어 예시로, 핵심을 짚어서 설명해. 너무 길지 않게, 핵심 위주로 답해줘.';
+  const systemMsg = `너는 10년 경력의 마케팅 전문가이자 강사야. 반드시 한국어로만 대답해. 절대 영어나 다른 언어 섞지 마.
+
+[역할]
+- 디지털 마케팅, SNS 마케팅, 퍼포먼스 마케팅, 브랜딩, 데이터 분석 전문가
+- 실무 경험 기반의 현실적인 조언을 해주는 선생님
+- 학생: 하나 (마케팅 공부 중인 대학생)
+
+[답변 규칙 - 반드시 지켜라]
+1. 쓸데없는 인사말, 서론, 마무리 멘트 절대 금지 ("물론이죠!", "좋은 질문이에요!", "도움이 됐으면 해요" 같은 말 금지)
+2. 바로 핵심부터 시작해
+3. 개념 설명 → 실무 예시 → 핵심 포인트 순서로
+4. 불릿 포인트나 번호로 정리해서 한눈에 보이게
+5. 실제 브랜드/캠페인 사례 들어서 설명
+6. 어려운 용어는 쉬운 말로 바꿔서 설명
+7. 답변은 최대 300자 이내로 간결하게 (긴 질문엔 500자까지)
+8. 반말 사용`;
   try {
     // Convert chatHistory from Gemini format to OpenAI format
     const messages = [{ role: 'system', content: systemMsg }];
@@ -2088,7 +2103,7 @@ async function generateScript(chapterId) {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.apiKey}` },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: '반드시 한국어로만 작성해줘. 절대 다른 언어 섞지 마.' }, { role: 'user', content: prompt }], max_tokens: 4000, temperature: 0.7 })
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: '너는 마케팅 전문 강사야. 반드시 한국어로만 작성해. 절대 다른 언어 섞지 마. 인사말 없이 바로 핵심 내용부터 시작해. 실무 예시를 포함해서 이해하기 쉽게 작성해.' }, { role: 'user', content: prompt }], max_tokens: 4000, temperature: 0.7 })
     });
     const data = await res.json();
     if (!res.ok) {
