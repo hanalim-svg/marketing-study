@@ -140,11 +140,11 @@ async function fetchAIQuizQuestions(){
     return;
   }
   try{
-    const resp=await fetch('https://api.x.ai/v1/chat/completions',{
+    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
       body:JSON.stringify({
-        model:'grok-3',
+        model:'llama-3.3-70b-versatile',
         max_tokens:800,
         messages:[
           {role:'system',content:'자동차 정비 시험 문제 출제자입니다. JSON만 응답하세요.'},

@@ -4,38 +4,276 @@
 const letters = ['A','B','C','D'];
 
 const chapters = [
+  // ── CHAPTER 01 ──────────────────────────────────────────────
   {num:'01',title:'엔진 기본 구조와 원리',prog:0,status:'🔒 대기중',desc:'4행정 사이클, 피스톤 운동, 흡배기 시스템의 구조와 작동원리',
-   sections:[{title:'엔진 개요 및 분류',done:false},{title:'4행정 사이클',done:false},{title:'피스톤과 크랭크샤프트',done:false},{title:'흡배기 시스템',done:false},{title:'밸브 타이밍',done:false}],
-   content:{title:'엔진 기본 구조와 원리',subtitle:'CHAPTER 01 · 완료',
-    text:`<strong>내연기관(Internal Combustion Engine)</strong>은 연료를 엔진 내부에서 연소시켜 그 폭발력을 기계적 에너지로 변환하는 장치입니다.<br><br>현재 대부분의 자동차는 <strong>4행정 왕복 피스톤 엔진</strong>을 사용합니다. 4행정이란 피스톤이 <strong>흡입 → 압축 → 폭발(동력) → 배기</strong>의 4가지 행정을 반복하며 동력을 발생시키는 방식입니다.<br><br><strong>흡입 행정</strong>: 피스톤이 내려가며 혼합가스(공기+연료)를 흡입합니다.<br><strong>압축 행정</strong>: 피스톤이 올라가며 혼합가스를 압축합니다.<br><strong>폭발(동력) 행정</strong>: 점화플러그가 불꽃을 일으켜 폭발하며 피스톤을 강하게 밀어냅니다.<br><strong>배기 행정</strong>: 연소된 가스를 밖으로 내보냅니다.`,
-    keyterms:[{name:'TDC (상사점)',def:'피스톤이 가장 높은 위치에 있을 때'},{name:'BDC (하사점)',def:'피스톤이 가장 낮은 위치에 있을 때'},{name:'압축비',def:'하사점 체적 / 상사점 체적 (가솔린 약 8~12:1)'},{name:'행정 (Stroke)',def:'상사점과 하사점 사이의 거리'}],
-    info:'4행정 순서 암기법: "흡압폭배" (흡입→압축→폭발→배기)로 외우세요! 시험에 자주 출제됩니다.',
-    warn:'압축 행정과 흡입 행정을 혼동하지 마세요. 피스톤이 올라가면서 가스를 압축하는 것이 압축 행정입니다.'}},
+   sections:[
+    {title:'엔진 개요 및 분류',done:false,content:{
+      title:'엔진 개요 및 분류',
+      text:'<strong>내연기관(Internal Combustion Engine)</strong>은 연료를 엔진 내부에서 연소시켜 그 폭발력을 기계적 에너지로 변환하는 장치입니다.<br><br><strong>엔진의 분류</strong><br>① 연료 종류: 가솔린 엔진 / 디젤 엔진 / LPG 엔진<br>② 냉각 방식: 수냉식(현대 차량 대부분) / 공냉식(오토바이 등)<br>③ 실린더 배열: 직렬형(L형), V형, 수평대향형(Boxer)<br>④ 행정 수: 2행정 / 4행정 (현재 대부분 4행정)<br><br><strong>실린더(Cylinder)</strong>는 피스톤이 왕복 운동하는 공간으로, 연소가 일어나는 핵심 부위입니다. 실린더 내벽은 정밀하게 가공되어 있으며, 피스톤 링이 기밀을 유지합니다.',
+      info:'가솔린 엔진 vs 디젤 엔진 구분은 시험 빈출! 가솔린=점화플러그 점화, 디젤=압축열 자기착화(압축비 15~22:1)',
+      warn:'2행정과 4행정을 혼동하지 마세요. 4행정은 크랭크 2바퀴(720°)에 1번 폭발, 2행정은 1바퀴(360°)에 1번 폭발입니다.',
+      keyterms:[{name:'내연기관',def:'연료를 엔진 내부에서 연소시켜 기계 에너지로 변환'},{name:'실린더',def:'피스톤이 왕복하는 연소 공간'},{name:'배기량',def:'전체 실린더의 피스톤 행정 체적 합계 (단위: cc 또는 L)'},{name:'압축비',def:'하사점 체적 ÷ 상사점 체적 (가솔린 8~12:1, 디젤 15~22:1)'}]
+    }},
+    {title:'4행정 사이클',done:false,content:{
+      title:'4행정 사이클',
+      text:'<strong>4행정 사이클</strong>은 피스톤의 4번 움직임(2번 상승 + 2번 하강)으로 1사이클을 완성하며, 크랭크샤프트는 720° 회전합니다.<br><br><strong>① 흡입 행정 (Intake Stroke)</strong><br>피스톤이 하강하며 흡기 밸브가 열려 혼합기(공기+연료) 또는 공기를 흡입합니다. 배기 밸브는 닫힌 상태입니다.<br><br><strong>② 압축 행정 (Compression Stroke)</strong><br>흡·배기 밸브 모두 닫힌 상태에서 피스톤이 상승하여 혼합기를 압축합니다. 이때 온도와 압력이 상승합니다.<br><br><strong>③ 폭발(동력) 행정 (Power Stroke)</strong><br>피스톤이 TDC(상사점) 근처에서 점화플러그가 점화(가솔린) 또는 압축열로 자기착화(디젤)하여 폭발이 일어나고, 팽창 압력으로 피스톤을 강하게 밀어냅니다. 유일하게 동력이 발생하는 행정입니다.<br><br><strong>④ 배기 행정 (Exhaust Stroke)</strong><br>배기 밸브가 열리고 피스톤이 상승하며 연소 가스를 배출합니다.',
+      info:'암기법: "흡압폭배" (흡입→압축→폭발→배기). 동력이 발생하는 행정은 폭발 행정 1개뿐! 시험 필수 암기',
+      warn:'압축 행정(피스톤 상승+밸브 닫힘)과 배기 행정(피스톤 상승+배기 밸브 열림)을 구분하세요.',
+      keyterms:[{name:'TDC(상사점)',def:'피스톤이 가장 높은 위치'},{name:'BDC(하사점)',def:'피스톤이 가장 낮은 위치'},{name:'행정(Stroke)',def:'TDC와 BDC 사이의 거리'},{name:'밸브 오버랩',def:'흡기·배기 밸브가 동시에 열려 있는 순간 (흡배기 전환점)'}]
+    }},
+    {title:'피스톤과 크랭크샤프트',done:false,content:{
+      title:'피스톤과 크랭크샤프트',
+      text:'<strong>피스톤(Piston)</strong>은 실린더 내에서 왕복 운동하며 연소 압력을 커넥팅 로드를 통해 크랭크샤프트에 전달합니다.<br><br><strong>피스톤 링(Piston Ring)</strong>은 피스톤과 실린더 벽 사이의 기밀 유지, 오일 제어, 열 전달 역할을 합니다.<br>• 압축 링(Compression Ring): 연소가스 기밀 유지<br>• 오일 링(Oil Ring): 실린더 벽의 여분 오일 긁어 내림<br><br><strong>커넥팅 로드(Connecting Rod)</strong>는 피스톤의 왕복 운동을 크랭크샤프트의 회전 운동으로 변환합니다.<br><br><strong>크랭크샤프트(Crankshaft)</strong>는 엔진의 최종 출력축으로, 피스톤의 왕복 운동을 회전 운동으로 변환하여 변속기로 동력을 전달합니다.<br><br><strong>플라이휠(Flywheel)</strong>은 크랭크샤프트 끝에 달린 무거운 원판으로 회전 관성을 이용해 비동력 행정에서도 엔진 회전을 부드럽게 유지합니다.',
+      info:'피스톤 링은 보통 3개: 상부 압축 링 2개 + 하부 오일 링 1개. 마모 시 압축 압력 저하·오일 소비 증가 발생',
+      warn:'크랭크샤프트 베어링 마모 시 엔진에서 노킹음이 발생합니다. 오일 압력 유지가 중요합니다.',
+      keyterms:[{name:'피스톤',def:'실린더 내 왕복 운동, 연소 압력 전달'},{name:'압축 링',def:'연소가스 기밀 유지 역할의 피스톤 링'},{name:'오일 링',def:'실린더 벽 오일 제거 역할의 피스톤 링'},{name:'크랭크샤프트',def:'왕복 운동을 회전 운동으로 변환하는 엔진 출력축'}]
+    }},
+    {title:'흡배기 시스템',done:false,content:{
+      title:'흡배기 시스템',
+      text:'<strong>흡기 시스템(Intake System)</strong>은 외부 공기를 정화하여 엔진에 공급하는 시스템입니다.<br><br><strong>에어 클리너(Air Cleaner)</strong>: 흡입 공기에서 먼지와 이물질 제거. 막히면 출력 저하·연비 악화<br><strong>스로틀 바디(Throttle Body)</strong>: 스로틀 밸브로 흡입 공기량 조절. 가속 페달과 연결<br><strong>흡기 매니폴드(Intake Manifold)</strong>: 스로틀 바디에서 각 실린더로 공기 분배<br><br><strong>배기 시스템(Exhaust System)</strong>은 연소 후 가스를 외부로 방출하는 시스템입니다.<br><br><strong>배기 매니폴드(Exhaust Manifold)</strong>: 각 실린더의 배기가스를 모아 하나의 관으로<br><strong>촉매 컨버터(Catalytic Converter)</strong>: 유해 배기가스(CO, HC, NOx)를 무해 물질로 변환<br><strong>머플러(Muffler)</strong>: 배기 소음 감소<br><strong>EGR 밸브</strong>: 배기가스 일부를 흡기로 재순환시켜 NOx 저감',
+      info:'촉매 컨버터 작동 온도: 약 300°C 이상. 3원 촉매(Three-way Catalyst)는 CO·HC·NOx 3가지 동시 처리. 시험 빈출!',
+      warn:'에어 클리너 막힘 → 흑연 매연 발생(연료 과다). EGR 밸브 고장 → NOx 배출 증가.',
+      keyterms:[{name:'스로틀 바디',def:'흡입 공기량을 조절하는 밸브 장치'},{name:'흡기 매니폴드',def:'공기를 각 실린더에 분배하는 관'},{name:'촉매 컨버터',def:'배기가스의 유해성분(CO, HC, NOx) 정화'},{name:'EGR',def:'배기가스 재순환 — NOx 저감 장치'}]
+    }},
+    {title:'밸브 타이밍',done:false,content:{
+      title:'밸브 타이밍',
+      text:'<strong>밸브 타이밍(Valve Timing)</strong>은 흡·배기 밸브가 열리고 닫히는 시점을 크랭크샤프트 각도(°)로 나타낸 것입니다.<br><br><strong>캠샤프트(Camshaft)</strong>는 캠의 형상으로 밸브를 개폐하며, 크랭크샤프트의 절반 속도(1/2)로 회전합니다. 타이밍 벨트 또는 체인으로 크랭크샤프트와 연결됩니다.<br><br><strong>밸브 오버랩(Valve Overlap)</strong>: 배기 말기~흡입 초기에 흡·배기 밸브가 동시에 열려 있는 구간. 고속에서 흡기 효율을 높이기 위한 목적입니다.<br><br><strong>DOHC vs SOHC</strong><br>• SOHC(Single Overhead Camshaft): 캠샤프트 1개로 흡·배기 밸브 모두 제어<br>• DOHC(Double Overhead Camshaft): 흡기·배기 각각 별도 캠샤프트, 고출력에 유리<br><br><strong>VVT(Variable Valve Timing)</strong>: 엔진 회전수에 따라 밸브 타이밍을 가변적으로 조절하여 저·고속 모두에서 최적 성능 발휘.',
+      info:'타이밍 벨트는 보통 10만km 교체 권장. 끊어지면 밸브와 피스톤 충돌로 엔진 대파 가능! DOHC가 SOHC보다 고출력 유리.',
+      warn:'타이밍 벨트 또는 체인이 이탈하면 엔진이 즉시 정지하고 큰 손상이 발생합니다. 정기 교체 필수!',
+      keyterms:[{name:'캠샤프트',def:'캠 형상으로 흡배기 밸브를 개폐 제어'},{name:'밸브 오버랩',def:'흡·배기 밸브가 동시 열려있는 구간'},{name:'DOHC',def:'흡기·배기 캠샤프트 각 1개씩, 총 2개'},{name:'VVT',def:'엔진 회전수에 따라 밸브 타이밍을 가변 제어'}]
+    }},
+  ]},
+  // ── CHAPTER 02 ──────────────────────────────────────────────
   {num:'02',title:'냉각 및 윤활 시스템',prog:0,status:'🔒 대기중',desc:'엔진 냉각수 순환, 오일 압력, 윤활 경로 및 필터 관리',
-   sections:[{title:'냉각 시스템 개요',done:false},{title:'냉각수 순환 경로',done:false},{title:'서모스탯 작동 원리',done:false},{title:'윤활 시스템 개요',done:false},{title:'오일 펌프와 필터',done:false},{title:'오일 점도와 규격',done:false},{title:'과열 및 과냉 진단',done:false}],
-   content:{title:'냉각 시스템 개요',subtitle:'CHAPTER 02 · SECTION 01 · 예상시간 15분',
-    text:`<strong>냉각 시스템(Cooling System)</strong>은 엔진 작동 중 발생하는 열을 외부로 방출하여 엔진을 <strong>적정 온도(85~95°C)</strong>로 유지하는 시스템입니다.<br><br>엔진이 연료를 연소시킬 때 발생하는 열의 약 30%는 동력으로 변환되고, 나머지 70% 중 상당 부분이 냉각 시스템을 통해 방출됩니다.<br><br>냉각 방식에는 <strong>수냉식(Water Cooling)</strong>과 공냉식(Air Cooling)이 있으며, 현대 자동차는 대부분 수냉식을 사용합니다.`,
-    keyterms:[{name:'라디에이터 (Radiator)',def:'냉각수의 열을 외부 공기로 방출하는 열교환기'},{name:'워터 펌프 (Water Pump)',def:'냉각수를 강제 순환시키는 펌프. 보통 벨트로 구동'},{name:'서모스탯 (Thermostat)',def:'수온에 따라 열리고 닫히며 냉각수 흐름 조절'},{name:'부동액 (Antifreeze)',def:'냉각수 어는점을 낮추고 부식을 방지하는 첨가제'}],
-    info:'엔진 적정 작동 온도는 85~95°C입니다. 수온계가 이 범위를 벗어나면 즉시 점검이 필요합니다.',
-    warn:'오버히트 시 즉시 시동을 끄고 냉각 후 점검하세요! 뜨거운 상태에서 라디에이터 캡을 열면 고압 스팀으로 화상을 입을 수 있습니다!'}},
+   sections:[
+    {title:'냉각 시스템 개요',done:false,content:{
+      title:'냉각 시스템 개요',
+      text:'<strong>냉각 시스템(Cooling System)</strong>은 엔진 연소 시 발생하는 과도한 열을 방출하여 엔진을 <strong>적정 온도(85~95°C)</strong>로 유지하는 시스템입니다.<br><br>연소 열의 약 30%만 동력으로 변환되고 나머지는 냉각 시스템과 배기가스로 방출됩니다.<br><br><strong>냉각 방식 비교</strong><br>• 수냉식: 냉각수(부동액+물)로 냉각. 현대 자동차 대부분 채택<br>• 공냉식: 외부 공기로 직접 냉각. 오토바이, 소형 엔진에 사용<br><br><strong>냉각 시스템 주요 구성</strong><br>라디에이터 → 워터 펌프 → 워터 재킷 → 서모스탯 → 라디에이터(순환)',
+      info:'엔진 적정 온도 85~95°C 필수 암기! 과열(오버히트) → 엔진 손상, 과냉 → 연비 저하·엔진 마모 증가',
+      warn:'오버히트 발생 시 즉시 안전한 곳에 정차하고 시동을 끄세요. 냉각된 후에 라디에이터 캡을 여세요!',
+      keyterms:[{name:'라디에이터',def:'냉각수 열을 외부 공기로 방출하는 열교환기'},{name:'워터 펌프',def:'냉각수를 강제 순환시키는 펌프 (벨트 구동)'},{name:'부동액',def:'냉각수 어는점 저하 + 부식 방지. 물과 50:50 혼합'},{name:'워터 재킷',def:'실린더 블록·헤드 내부의 냉각수 통로'}]
+    }},
+    {title:'냉각수 순환 경로',done:false,content:{
+      title:'냉각수 순환 경로',
+      text:'냉각수는 수온에 따라 <strong>소순환</strong>과 <strong>대순환</strong> 두 가지 경로로 흐릅니다.<br><br><strong>소순환 (워밍업 시, 수온 낮을 때)</strong><br>워터 펌프 → 워터 재킷 → 서모스탯(닫힘) → 히터 코어 → 워터 펌프<br>• 라디에이터를 거치지 않아 엔진을 빨리 워밍업<br><br><strong>대순환 (정상 작동 시, 수온 높을 때)</strong><br>워터 펌프 → 워터 재킷 → 서모스탯(열림) → 라디에이터 → 워터 펌프<br>• 라디에이터에서 냉각 후 재순환<br><br><strong>라디에이터 캡(압력 캡)</strong>: 냉각계통 압력을 0.9~1.1 kgf/cm² 유지. 압력이 높아지면 밸브가 열려 오버플로 탱크로 방출하고, 냉각 시 다시 흡입합니다. 압력 유지 시 냉각수 끓는점이 110°C 이상으로 상승합니다.',
+      info:'라디에이터 캡의 역할: ① 압력 유지 → 비등점 상승, ② 냉각계통 밀봉. 시험 빈출!',
+      warn:'냉각수 부족 시 오버히트 발생. 냉각수 누수는 라디에이터, 호스, 워터 펌프 개스킷을 순서대로 점검하세요.',
+      keyterms:[{name:'소순환',def:'서모스탯 닫힘 시 라디에이터 미경유 순환 (워밍업)'},{name:'대순환',def:'서모스탯 열림 시 라디에이터 경유 순환 (정상)'},{name:'라디에이터 캡',def:'냉각계통 압력 조절 및 비등점 상승 역할'},{name:'오버플로 탱크',def:'냉각수 팽창·수축 시 여분 냉각수 저장'}]
+    }},
+    {title:'서모스탯 작동 원리',done:false,content:{
+      title:'서모스탯 작동 원리',
+      text:'<strong>서모스탯(Thermostat)</strong>은 냉각수 온도에 따라 자동으로 열리고 닫혀 냉각수 흐름을 조절하는 온도 조절 밸브입니다.<br><br><strong>작동 원리</strong><br>서모스탯 내부에는 <strong>왁스(밀납)</strong>가 들어 있습니다. 수온이 올라가면 왁스가 팽창하면서 밸브를 밀어 열리고, 수온이 내려가면 수축하여 스프링 복원력으로 닫힙니다.<br><br><strong>개방 온도</strong><br>• 보통 80~88°C에서 열리기 시작<br>• 완전 개방: 약 95°C<br><br><strong>고장 유형과 증상</strong><br>• 닫힌 채로 고장(열리지 않음): 오버히트, 냉각수 라디에이터 미순환<br>• 열린 채로 고장(닫히지 않음): 워밍업 불량, 냉간 시 연비 저하, 히터 효율 저하',
+      info:'서모스탯 고장 진단: 냉각수 호스 만져보기 — 상부 호스가 뜨거운데 하부 호스가 차갑다면 서모스탯 막힘 의심',
+      warn:'서모스탯 제거(빼내고 운행) 금지! 워밍업 불량으로 연비·성능 저하 및 엔진 마모 심화.',
+      keyterms:[{name:'서모스탯',def:'수온에 따라 냉각수 흐름을 자동 조절하는 온도 조절 밸브'},{name:'왁스 펠릿',def:'서모스탯 내부 열팽창 물질 (수온 상승 시 팽창)'},{name:'개방 온도',def:'서모스탯이 열리기 시작하는 수온 (보통 80~88°C)'}]
+    }},
+    {title:'윤활 시스템 개요',done:false,content:{
+      title:'윤활 시스템 개요',
+      text:'<strong>윤활 시스템(Lubrication System)</strong>은 엔진 오일을 각 마찰 부위에 공급하여 마모를 방지하고 냉각·청정·방청·밀봉 역할을 합니다.<br><br><strong>엔진 오일의 5대 기능</strong><br>① <strong>윤활</strong>: 금속 마찰면 사이 유막 형성으로 마모 방지<br>② <strong>냉각</strong>: 연소열과 마찰열 흡수 후 오일 팬으로 방열<br>③ <strong>청정</strong>: 카본·슬러지 등 이물질 세척·운반<br>④ <strong>방청</strong>: 금속 부품 산화·부식 방지<br>⑤ <strong>밀봉</strong>: 피스톤 링과 실린더 벽 사이 기밀 보조<br><br><strong>윤활 방식</strong><br>• 압력 순환식(강제 순환식): 현대 자동차 대부분. 오일 펌프로 강제 압송<br>• 비말식: 크랭크샤프트 회전으로 오일을 튀겨 윤활 (일부 소형 엔진)',
+      info:'엔진 오일 교환 주기: 일반 오일 5,000~7,000km, 합성 오일 10,000~15,000km. 오일 부족은 엔진 파손의 가장 큰 원인!',
+      warn:'오일 경고등 점등 시 즉시 정차하고 오일량 확인! 그 상태로 계속 운행하면 엔진 시저(고착) 발생.',
+      keyterms:[{name:'오일 팬(Oil Pan)',def:'엔진 오일을 저장하는 하부 용기'},{name:'오일 스트레이너',def:'오일 팬 내 오일 흡입 시 이물질 1차 여과'},{name:'오일 게이지',def:'오일 양과 상태를 점검하는 딥스틱'},{name:'오일 압력 경고등',def:'오일 압력 부족 시 점등 — 즉시 정차 필요'}]
+    }},
+    {title:'오일 펌프와 필터',done:false,content:{
+      title:'오일 펌프와 필터',
+      text:'<strong>오일 펌프(Oil Pump)</strong>는 오일 팬의 오일을 흡입하여 엔진 각 부위에 압력을 가해 공급합니다.<br><br><strong>오일 펌프 종류</strong><br>• 기어 펌프(Gear Pump): 2개의 기어가 맞물려 회전하며 오일 압송. 가장 일반적<br>• 로터리 펌프(Rotor Pump): 내부 로터와 외부 로터의 편심으로 오일 압송<br><br><strong>오일 압력 조절 밸브(Relief Valve)</strong>: 오일 압력이 규정 이상 상승하면 열려 과압 방지<br><br><strong>오일 필터(Oil Filter)</strong>는 순환하는 오일의 카본·금속 분말·슬러지 등 이물질을 여과합니다.<br>• 전류식(Full Flow): 모든 오일이 필터를 통과 (현재 대부분)<br>• 분류식: 일부만 필터 통과<br>• 교환 주기: 오일 교환 시 동시 교환 권장<br><br>필터 막힘 시 <strong>바이패스 밸브</strong>가 열려 여과 없이 오일을 직접 공급 (엔진 보호 목적)',
+      info:'오일 펌프 구동: 크랭크샤프트 또는 캠샤프트로 구동. 엔진 회전수에 비례하여 유량 증가.',
+      warn:'오일 필터 교환 없이 오일만 교환하면 필터 내 오염물이 새 오일을 오염시킵니다. 반드시 동시 교환!',
+      keyterms:[{name:'오일 펌프',def:'오일 팬에서 오일을 흡입·가압하여 각부에 공급'},{name:'릴리프 밸브',def:'오일 압력 과상승 방지 안전 밸브'},{name:'오일 필터',def:'오일 내 이물질 여과 (오일 교환 시 동시 교환)'},{name:'바이패스 밸브',def:'필터 막힘 시 오일을 직접 공급하는 안전 경로'}]
+    }},
+    {title:'오일 점도와 규격',done:false,content:{
+      title:'오일 점도와 규격',
+      text:'<strong>오일 점도(Viscosity)</strong>는 오일의 흐름 저항으로, 온도에 따라 크게 변합니다. 점도 표기는 SAE 규격을 사용합니다.<br><br><strong>SAE 점도 등급 읽는 법</strong><br>예: <strong>5W-30</strong><br>• <strong>5W</strong>: W = Winter(겨울). 앞 숫자가 작을수록 저온에서도 잘 흐름 (저온 점도)<br>• <strong>30</strong>: 뒤 숫자가 클수록 고온에서도 점도 유지 (고온 점도)<br>• 일반적으로 5W-30, 5W-40, 0W-20 등 사용<br><br><strong>API 서비스 분류</strong><br>• 가솔린: SN, SP 등 (S = Service/Spark)<br>• 디젤: CJ, CK 등 (C = Commercial/Compression)<br><br><strong>오일 열화 증상</strong>: 색이 검게 변함, 점도 저하, 금속 분말 함유, 거품 발생<br>점검 방법: 오일 게이지(딥스틱)로 양과 색상·오염도 확인',
+      info:'5W-30에서 W는 Winter! "앞=저온 유동성, 뒤=고온 점도 유지". 점도가 너무 낮으면 유막 파손, 너무 높으면 연비 저하.',
+      warn:'규정 점도와 다른 오일 사용 시 엔진 손상 우려. 반드시 차량 메뉴얼 권장 오일 사용!',
+      keyterms:[{name:'SAE',def:'미국자동차공학회 — 오일 점도 등급 규격 기관'},{name:'W (Winter)',def:'SAE 점도 표기에서 저온 특성 의미'},{name:'API',def:'미국석유협회 — 오일 품질 등급 규격 (SP, CK 등)'},{name:'점도 지수',def:'온도 변화에 따른 점도 변화 정도 (높을수록 좋음)'}]
+    }},
+    {title:'과열 및 과냉 진단',done:false,content:{
+      title:'과열 및 과냉 진단',
+      text:'<strong>오버히트(과열, Overheat)</strong>는 냉각수 온도가 비정상적으로 상승하는 상태입니다.<br><br><strong>오버히트 원인</strong><br>① 냉각수 부족 (누수, 보충 미실시)<br>② 라디에이터 막힘<br>③ 서모스탯 고장 (닫힌 채 고착)<br>④ 워터 펌프 불량 (벨트 끊어짐, 임펠러 마모)<br>⑤ 냉각 팬 작동 불량<br>⑥ 헤드 개스킷 파손 (냉각수와 엔진 오일 혼합)<br><br><strong>오버히트 대처법</strong><br>① 히터를 최대로 켠다 (열 방출 효과)<br>② 안전한 곳에 정차<br>③ 시동 OFF 후 자연 냉각 (절대 즉시 라디에이터 캡 열지 말 것)<br>④ 냉각 후 냉각수 점검·보충<br><br><strong>과냉(Under-cooling)</strong>: 엔진이 정상 온도에 도달하지 못하는 상태<br>원인: 서모스탯 고장(열린 채 고착)<br>증상: 워밍업 불량, 연비 저하, 히터 효율 저하, 엔진 마모 증가',
+      info:'헤드 개스킷 파손 증상: 냉각수에 기포 발생, 오일이 흰색으로 변색(냉각수 혼입), 배기가스에서 흰 연기.',
+      warn:'오버히트 상태에서 냉각수를 보충할 때는 반드시 냉각 후 보충! 뜨거운 상태에서 차가운 물 급주입 시 실린더 헤드 변형 발생.',
+      keyterms:[{name:'오버히트',def:'냉각 불량으로 엔진 온도 과상승'},{name:'헤드 개스킷',def:'실린더 헤드와 블록 사이 밀봉 부품 — 파손 시 냉각수/오일 혼합'},{name:'냉각 팬',def:'라디에이터로 공기 강제 통과시키는 팬 (전동식 또는 벨트식)'}]
+    }},
+  ]},
+  // ── CHAPTER 03 ──────────────────────────────────────────────
   {num:'03',title:'연료 및 점화 시스템',prog:0,status:'🔒 대기중',desc:'연료 분사 방식, 점화 타이밍, 스파크 플러그와 고압 코일',
-   sections:[{title:'연료 공급 시스템',done:false},{title:'GDI 직분사 방식',done:false},{title:'점화장치 구조',done:false},{title:'스파크 플러그',done:false}],
-   content:{title:'연료 및 점화 시스템',subtitle:'CHAPTER 03',text:'연료 시스템은 연료 탱크로부터 연료를 흡입하여 엔진에 공급하는 역할을 합니다.<br><br><strong>연료 펌프</strong>가 연료를 가압하여 인젝터로 보내고, <strong>인젝터</strong>가 연료를 미세하게 분사합니다. <strong>점화 시스템</strong>은 압축된 혼합가스에 불꽃을 일으켜 연소가 일어나도록 합니다.',keyterms:[{name:'연료 펌프',def:'연료 탱크의 연료를 가압하여 인젝터로 공급'},{name:'인젝터',def:'연료를 미세하게 분사하는 전자식 밸브'},{name:'점화 코일',def:'저전압을 고전압으로 변환하는 장치'},{name:'스파크 플러그',def:'고전압 전기 불꽃으로 혼합가스 점화'}],info:'점화 순서(점화 타이밍)는 엔진 성능에 매우 중요합니다. 시험 빈출!',warn:''}},
+   sections:[
+    {title:'연료 공급 시스템',done:false,content:{
+      title:'연료 공급 시스템',
+      text:'<strong>연료 공급 시스템</strong>은 연료 탱크의 연료를 엔진 인젝터까지 적정 압력으로 공급하는 시스템입니다.<br><br><strong>구성 부품</strong><br>① <strong>연료 탱크</strong>: 연료 저장. 내부에 연료 펌프 내장 (현대 차량)<br>② <strong>연료 펌프(Fuel Pump)</strong>: 연료를 가압하여 인젝터에 공급. 전기식 모터로 구동<br>③ <strong>연료 필터</strong>: 연료 내 이물질 여과. 주기적 교환 필요<br>④ <strong>연료 레일(Fuel Rail)</strong>: 고압 연료를 인젝터에 균등 분배하는 관<br>⑤ <strong>연료 압력 조절기(Fuel Pressure Regulator)</strong>: 연료 압력을 일정하게 유지<br>⑥ <strong>인젝터(Injector)</strong>: ECU 신호에 따라 연료를 미세하게 분사하는 전자식 솔레노이드 밸브<br><br><strong>연료 압력</strong>: 가솔린 MPI 약 2.5~3.5 kgf/cm², GDI 직분사 50~200 bar (고압)',
+      info:'연료 펌프는 연료 탱크 내부에 설치되어 연료에 잠겨 냉각됩니다. 연료 부족 상태로 장기 주행 시 펌프 과열·손상 위험!',
+      warn:'연료 시스템 작업 시 반드시 점화 스위치 OFF 후 연료 압력을 제거하세요. 고압 연료 분출로 화재 위험!',
+      keyterms:[{name:'인젝터',def:'ECU 신호로 연료를 미세 분사하는 솔레노이드 밸브'},{name:'연료 레일',def:'고압 연료를 각 인젝터에 분배하는 관'},{name:'연료 압력 조절기',def:'연료 압력을 일정하게 유지하는 조절 밸브'},{name:'연료 필터',def:'연료 내 이물질 여과 (주기적 교환 필요)'}]
+    }},
+    {title:'GDI 직분사 방식',done:false,content:{
+      title:'GDI 직분사 방식',
+      text:'<strong>MPI(Multi Point Injection)</strong>는 흡기 포트(흡기 밸브 앞)에 연료를 분사하는 방식으로, 현재 많이 사용됩니다.<br><br><strong>GDI(Gasoline Direct Injection, 직접 분사)</strong>는 연료를 실린더 내 연소실에 직접 고압으로 분사하는 방식입니다.<br><br><strong>GDI 장점</strong><br>① 연료 미립화 우수 → 완전연소 향상<br>② 연비 향상 (MPI 대비 10~15%)<br>③ 출력 향상<br>④ CO₂ 배출 감소<br><br><strong>GDI 단점</strong><br>① 고압 연료 펌프 필요 (복잡, 비용 증가)<br>② 흡기 포트에 카본 퇴적물 발생 (포트에 세척 불가)<br>③ 소음 증가<br><br><strong>분사 방식 비교</strong><br>카뷰레터 → TBI(단일 포트) → MPI(다중 포트) → GDI(직접 분사) 순으로 발전',
+      info:'GDI는 연소실 직접 분사 → 기화 냉각 효과로 노킹 저항 향상 → 압축비를 더 높일 수 있어 열효율 향상. 시험 빈출!',
+      warn:'GDI 차량은 흡기 포트 카본 적층 문제가 있습니다. 주기적으로 인젝터 클리너 사용 또는 흡기 세척 서비스 필요.',
+      keyterms:[{name:'MPI',def:'흡기 포트에 연료 분사 — 다중 포트 분사'},{name:'GDI',def:'연소실에 직접 고압 연료 분사 — 연비·출력 향상'},{name:'고압 연료 펌프',def:'GDI에서 연료를 고압(50~200 bar)으로 가압'},{name:'카뷰레터',def:'구형 방식 — 공기 흐름으로 연료 자연 혼합 (현재 미사용)'}]
+    }},
+    {title:'점화장치 구조',done:false,content:{
+      title:'점화장치 구조',
+      text:'<strong>점화 시스템</strong>은 압축된 혼합가스에 전기 불꽃을 일으켜 연소를 시작시키는 시스템입니다. (가솔린 엔진에만 해당, 디젤은 압축 자기착화)<br><br><strong>구성 부품</strong><br>① <strong>점화 코일(Ignition Coil)</strong>: 배터리 12V를 1만~3만V 고전압으로 변환. 상호유도 원리 이용<br>② <strong>배전기(Distributor)</strong>: 구형 방식. 고전압을 각 실린더에 순서대로 배분<br>③ <strong>스파크 플러그(Spark Plug)</strong>: 고전압 불꽃으로 혼합기 점화<br><br><strong>현대 점화 방식 — DLI(Distributor-Less Ignition)</strong><br>배전기 없이 각 실린더마다 독립 점화 코일 사용. ECU가 직접 각 코일 제어.<br><br><strong>점화 시기(점화 타이밍)</strong>: TDC(상사점) 전에 점화가 시작되어야 최대 폭발 압력을 얻을 수 있음<br>• 점화 진각: 엔진 회전수 증가 시 점화 시기를 더 앞당김<br>• 노킹(Knocking): 점화 시기 너무 빠르거나 연료 옥탄가 낮을 때 비정상 자기 착화',
+      info:'점화 순서(Firing Order): 4기통 직렬 엔진 = 1-3-4-2. 실린더가 균등한 간격으로 점화되어야 진동 최소화.',
+      warn:'노킹 발생 시 엔진 손상 가능. 고옥탄가 연료 사용 또는 점화 시기 조정으로 해결.',
+      keyterms:[{name:'점화 코일',def:'12V → 수만V 고전압 변환 (상호유도 원리)'},{name:'DLI',def:'배전기 없이 실린더별 독립 점화 코일 방식'},{name:'점화 진각',def:'고회전 시 점화 시기를 앞당기는 것'},{name:'노킹',def:'비정상 자기 착화로 인한 금속성 타격음'}]
+    }},
+    {title:'스파크 플러그',done:false,content:{
+      title:'스파크 플러그',
+      text:'<strong>스파크 플러그(Spark Plug)</strong>는 점화 코일에서 받은 고전압으로 전극 사이에 불꽃을 발생시켜 혼합기를 점화하는 부품입니다.<br><br><strong>구조</strong><br>• 중심 전극(Center Electrode): 고전압 인가<br>• 외부 전극(Ground Electrode): 접지<br>• 절연 애자: 중심 전극 절연 및 열 방출<br>• 나사부: 실린더 헤드에 장착<br><br><strong>열가(Heat Range)</strong>: 스파크 플러그가 열을 방출하는 능력<br>• 냉형(Cold Type): 방열 빠름 — 고성능 엔진, 고속 주행 차량<br>• 열형(Hot Type): 방열 느림 — 저배기량 엔진, 저속 위주 차량<br><br><strong>플러그 갭(Gap)</strong>: 중심 전극과 접지 전극 사이 간격. 보통 0.7~1.1mm<br>갭이 넓으면 강한 불꽃 but 고전압 필요, 갭이 좁으면 약한 불꽃<br><br><strong>교환 주기</strong>: 일반 플러그 2만km, 백금/이리듐 플러그 10만km',
+      info:'스파크 플러그 색으로 연소 상태 진단: 회백색=정상, 검은색(흑색)=연료 과다(농후), 흰색=연료 빈약(희박) 또는 과열',
+      warn:'잘못된 열가의 플러그 사용 시 조기 점화 또는 카본 퇴적 발생. 반드시 규정 번호 사용!',
+      keyterms:[{name:'열가',def:'플러그의 방열 능력 — 냉형(고회전용), 열형(저회전용)'},{name:'플러그 갭',def:'중심-접지 전극 간격 (0.7~1.1mm)'},{name:'조기 점화(Pre-ignition)',def:'정규 점화 전에 불꽃 발생 — 열형 플러그 과열로 발생'},{name:'플러그 색 진단',def:'회백=정상, 검정=농후, 흰색=희박·과열'}]
+    }},
+  ]},
+  // ── CHAPTER 04 ──────────────────────────────────────────────
   {num:'04',title:'전기 및 전자 시스템',prog:0,status:'🔒 대기중',desc:'배터리, 발전기, 스타터모터, 센서류, ECU 기초',
-   sections:[{title:'배터리 구조와 원리',done:false},{title:'발전기 (알터네이터)',done:false},{title:'스타터 모터',done:false},{title:'센서류 개요',done:false},{title:'ECU 기초',done:false}],
-   content:{title:'전기 및 전자 시스템',subtitle:'CHAPTER 04',text:'자동차 전기 시스템의 핵심은 <strong>배터리(Battery)</strong>, <strong>발전기(Alternator)</strong>, <strong>스타터 모터(Starter Motor)</strong>의 3요소입니다.<br><br>배터리는 시동 시 전기를 공급하고, 발전기는 엔진 구동 중 전기를 생산하여 배터리를 충전합니다. 스타터 모터는 배터리 전력으로 엔진을 최초 구동시킵니다.',keyterms:[{name:'배터리',def:'12V(완전충전 12.6~12.8V) 납산 축전지'},{name:'알터네이터',def:'엔진 구동으로 교류 전기를 발생시키는 발전기'},{name:'스타터 모터',def:'배터리 전력으로 엔진 크랭크샤프트를 회전시킴'},{name:'ECU',def:'엔진 제어 컴퓨터 — 각종 센서 신호를 분석하여 엔진 제어'}],info:'배터리 완전 충전 전압은 12.6~12.8V, 방전 시 11.8V 이하입니다. 시험 빈출!',warn:'배터리 역접속(+/- 반대 연결) 시 ECU, 퓨즈, 다이오드가 즉시 손상됩니다!'}},
+   sections:[
+    {title:'배터리 구조와 원리',done:false,content:{
+      title:'배터리 구조와 원리',
+      text:'자동차 배터리는 <strong>납산 축전지(Lead-Acid Battery)</strong>로, 납(Pb) 극판과 황산(H₂SO₄) 전해액을 사용합니다.<br><br><strong>구조</strong><br>• 양극판(+): 이산화납(PbO₂)<br>• 음극판(-): 해면상 납(Pb)<br>• 전해액: 묽은 황산(H₂SO₄) — 비중 완충전 1.260~1.280<br>• 셀(Cell): 1셀 = 약 2V. 자동차 배터리 = 6셀 = 12V<br><br><strong>전압 기준</strong><br>• 완전 충전: <strong>12.6~12.8V</strong><br>• 50% 방전: 약 12.0~12.2V<br>• 방전 기준: <strong>11.8V 이하</strong> (시험 필수 암기!)<br>• 충전 중 전압: 13.5~14.8V<br><br><strong>배터리 용량 표시</strong>: Ah(암페어시) — 예) 60Ah = 1A로 60시간 방전 가능<br><br><strong>자기 방전</strong>: 사용하지 않아도 서서히 방전 (월 1~3%). 장기 보관 시 보충전 필요',
+      info:'배터리 완충 12.6~12.8V, 방전 11.8V 이하는 시험 필수! 비중계로도 상태 확인 가능 (완충 1.260~1.280)',
+      warn:'배터리 접속 순서: 장착 시 (+)먼저 → (-)나중. 탈거 시 (-)먼저 → (+)나중. 역접속(+/- 반대) 시 전자부품 즉시 손상!',
+      keyterms:[{name:'납산 축전지',def:'납 극판과 묽은 황산 전해액을 사용한 자동차 배터리'},{name:'셀',def:'배터리 기본 단위 (1셀 ≈ 2V). 12V 배터리 = 6셀'},{name:'비중',def:'전해액 농도 — 완전 충전 1.260~1.280'},{name:'CCA',def:'저온 시동 능력 지수 (-18°C에서 방전 전류값)'}]
+    }},
+    {title:'발전기 (알터네이터)',done:false,content:{
+      title:'발전기 (알터네이터)',
+      text:'<strong>알터네이터(Alternator)</strong>는 엔진 구동 중 <strong>교류(AC) 전기를 발생</strong>시키고 내부 다이오드로 직류(DC)로 변환하여 배터리를 충전하고 전장품에 전원을 공급합니다.<br><br><strong>작동 원리</strong>: 엔진 회전력 → 풀리와 벨트 → 로터(자석) 회전 → 스테이터(코일)에 교류 전압 유도 → 다이오드 정류 → 직류 출력<br><br><strong>전압 조정기(IC 레귤레이터)</strong>: 출력 전압을 <strong>13.5~14.8V</strong>로 일정하게 유지. 내장형이 대부분.<br><br><strong>충전 경고등</strong>: 발전기 고장 또는 벨트 끊어짐 시 점등<br>충전 미실시 → 배터리만으로 전원 공급 → 배터리 방전 → 시동 꺼짐<br><br><strong>점검 방법</strong>: 멀티미터로 B+ 단자 전압 측정<br>• 공회전 시: 13.5~14.8V → 정상<br>• 13.5V 미만: 충전 불량<br>• 15V 초과: 과충전 (전압 조정기 불량)',
+      info:'알터네이터는 교류 발전 → 다이오드로 직류 변환. 발전기 고장 시 충전 경고등 점등! 정상 충전 전압 13.5~14.8V 암기.',
+      warn:'구동 벨트 장력이 너무 느슨하면 슬립으로 충전 불량, 너무 팽팽하면 베어링 손상. 적정 장력 유지 중요.',
+      keyterms:[{name:'알터네이터',def:'엔진 구동으로 교류 전기 발생 → 직류 변환하여 배터리 충전'},{name:'다이오드',def:'교류(AC)를 직류(DC)로 정류하는 반도체 소자'},{name:'전압 조정기',def:'출력 전압을 13.5~14.8V로 일정하게 유지'},{name:'충전 경고등',def:'충전 불량(발전기/벨트 이상) 시 점등'}]
+    }},
+    {title:'스타터 모터',done:false,content:{
+      title:'스타터 모터',
+      text:'<strong>스타터 모터(Starter Motor)</strong>는 시동 시 배터리 전력으로 크랭크샤프트를 강제 회전시켜 엔진 시동을 거는 직류 전동기입니다.<br><br><strong>구성 부품</strong><br>① <strong>직류 전동기(DC Motor)</strong>: 배터리 전류로 큰 토크 발생<br>② <strong>마그네틱 스위치(솔레노이드)</strong>: 시동 스위치 ON 시 대전류 회로 연결 + 피니언 기어 돌출<br>③ <strong>피니언 기어(Pinion Gear)</strong>: 플라이휠의 링 기어와 맞물려 엔진 크랭킹<br>④ <strong>오버런닝 클러치</strong>: 엔진 시동 후 모터가 엔진에 끌려 과속 파손 방지<br><br><strong>작동 순서</strong>: 점화 스위치 START → 마그네틱 스위치 작동 → 피니언 돌출 → 링 기어 맞물림 → DC 모터 회전 → 크랭크샤프트 회전 → 엔진 시동<br><br><strong>크랭킹 속도</strong>: 시동에 필요한 최저 회전수 약 100~200 RPM',
+      info:'마그네틱 스위치(솔레노이드)는 두 가지 역할: ① 대전류 회로 ON/OFF, ② 피니언 기어 이동(돌출). 시험 빈출!',
+      warn:'시동 버튼을 5초 이상 계속 누르지 마세요. 스타터 모터 과열 손상. 시동 불가 시 10초 대기 후 재시도.',
+      keyterms:[{name:'스타터 모터',def:'배터리 전력으로 엔진 크랭크샤프트를 강제 회전'},{name:'마그네틱 스위치',def:'대전류 회로 연결 + 피니언 돌출 역할의 솔레노이드'},{name:'피니언 기어',def:'링 기어와 맞물려 엔진 크랭킹'},{name:'오버런닝 클러치',def:'엔진 시동 후 스타터 모터 역구동 방지'}]
+    }},
+    {title:'센서류 개요',done:false,content:{
+      title:'센서류 개요',
+      text:'현대 자동차는 수십 개의 센서로 엔진 상태를 실시간 감지하여 ECU에 전달합니다.<br><br><strong>주요 엔진 센서</strong><br><br>① <strong>CKP(크랭크 포지션 센서)</strong>: 크랭크샤프트 위치·회전수 감지 → 엔진 RPM 결정. 가장 중요한 센서 중 하나.<br><br>② <strong>CMP(캠 포지션 센서)</strong>: 캠샤프트 위치 감지 → 실린더 판별 (점화 순서 결정)<br><br>③ <strong>TPS(스로틀 포지션 센서)</strong>: 스로틀 밸브 개도(가속 페달 위치) 감지 → 부하량 결정<br><br>④ <strong>MAP 센서(흡기 매니폴드 절대 압력)</strong>: 흡기 압력으로 흡입 공기량 간접 측정<br><br>⑤ <strong>MAF 센서(공기 질량 유량)</strong>: 흡입 공기 질량을 직접 측정 (열선식)<br><br>⑥ <strong>수온 센서(ECT)</strong>: 냉각수 온도 감지 → 워밍업 시 연료량 증량<br><br>⑦ <strong>노크 센서</strong>: 엔진 노킹 감지 → ECU가 점화 시기 지연<br><br>⑧ <strong>O2 센서(람다 센서)</strong>: 배기가스 산소 농도 → 공연비 피드백',
+      info:'CKP 센서 고장 시 엔진 시동 불가 (RPM 신호 없음). 각 센서별 역할과 고장 증상을 연결해서 암기!',
+      warn:'센서 단선 또는 단락 시 ECU는 대체값(Limp-home) 사용 → 연비·출력 저하, 배출가스 증가.',
+      keyterms:[{name:'CKP 센서',def:'크랭크샤프트 위치·RPM 감지 — 고장 시 시동 불가'},{name:'TPS',def:'스로틀(가속 페달) 개도 감지'},{name:'MAF 센서',def:'흡입 공기 질량을 직접 측정 (열선식)'},{name:'노크 센서',def:'엔진 노킹 감지 → 점화 시기 지연으로 보호'}]
+    }},
+    {title:'ECU 기초',done:false,content:{
+      title:'ECU 기초',
+      text:'<strong>ECU(Engine Control Unit, 엔진 제어 장치)</strong>는 각종 센서 신호를 입력받아 최적의 엔진 제어 신호를 출력하는 마이크로컴퓨터입니다.<br><br><strong>ECU 제어 항목</strong><br>① <strong>연료 분사량 제어</strong>: 흡입 공기량에 맞는 연료량 계산 → 인젝터 개방 시간 제어<br>② <strong>점화 시기 제어</strong>: 최적 점화 진각 결정<br>③ <strong>공회전 속도 제어</strong>: ISC(Idle Speed Control) 밸브 제어<br>④ <strong>연료 펌프 제어</strong>: 시동 ON 시 연료 펌프 작동<br>⑤ <strong>EGR 제어</strong>: 배기가스 재순환량 조절<br><br><strong>자기진단(OBD, On-Board Diagnostics)</strong><br>ECU는 센서·액추에이터 이상 발생 시 <strong>MIL(Malfunction Indicator Lamp, 엔진 경고등)</strong>을 점등하고 DTC(Diagnostic Trouble Code)를 저장합니다.<br>스캐너(진단기)로 DTC를 읽어 고장 부위를 파악합니다.<br><br><strong>페일세이프(Fail-Safe)</strong>: 센서 고장 시 기본값으로 운행 가능하도록 하는 안전 기능',
+      info:'OBD-II 진단기로 DTC 확인은 현대 정비의 기본. 엔진 경고등(MIL) = ECU가 이상 감지한 것. P0300 = 실화 등 코드 체계 암기 도움됨.',
+      warn:'ECU 교환 후 반드시 초기화(리셋) 및 학습 절차 수행. 배터리 탈거로 ECU 메모리 초기화 시 각종 학습값 소실.',
+      keyterms:[{name:'ECU',def:'센서 신호 분석·엔진 최적 제어 마이크로컴퓨터'},{name:'MIL(엔진 경고등)',def:'ECU가 이상 감지 시 점등하는 경고등'},{name:'DTC',def:'진단 코드 — 스캐너로 읽어 고장 부위 특정'},{name:'페일세이프',def:'센서 고장 시 기본값으로 최소 주행 가능하게 하는 안전 기능'}]
+    }},
+  ]},
+  // ── CHAPTER 05 ──────────────────────────────────────────────
   {num:'05',title:'제동 및 조향 시스템',prog:0,status:'🔒 대기중',desc:'디스크/드럼 브레이크 구조, ABS, 파워스티어링 원리',
-   sections:[{title:'디스크 브레이크',done:false},{title:'드럼 브레이크',done:false},{title:'ABS 원리',done:false},{title:'파워스티어링',done:false}],
-   content:{title:'제동 및 조향 시스템',subtitle:'CHAPTER 05',text:'<strong>디스크 브레이크</strong>는 디스크 로터(원판)를 캘리퍼의 브레이크 패드가 양쪽에서 압착하여 제동력을 발생시킵니다.<br><br><strong>드럼 브레이크</strong>는 드럼 내부에서 슈(Shoe)가 벌어지며 드럼 내벽을 마찰시켜 제동합니다.<br><br><strong>ABS(Anti-lock Braking System)</strong>는 급제동 시 바퀴 잠김을 방지하여 조향 능력을 유지시켜 줍니다.',keyterms:[{name:'캘리퍼',def:'유압으로 브레이크 패드를 디스크에 압착'},{name:'브레이크 패드',def:'디스크 로터와 마찰하는 마찰재'},{name:'ABS',def:'바퀴 잠김 방지 시스템 — 급제동 시 조향 유지'},{name:'마스터 실린더',def:'브레이크 페달 압력을 유압으로 변환'}],info:'디스크 vs 드럼: 디스크는 방열 우수, 드럼은 주차브레이크에 주로 사용. 시험 빈출!',warn:'브레이크 오일(DOT 규격)은 흡습성이 있어 주기적 교환이 필요합니다!'}},
+   sections:[
+    {title:'디스크 브레이크',done:false,content:{
+      title:'디스크 브레이크',
+      text:'<strong>디스크 브레이크(Disc Brake)</strong>는 회전하는 디스크 로터를 브레이크 패드가 양쪽에서 압착하여 제동력을 발생시키는 방식입니다.<br><br><strong>구성 부품</strong><br>① <strong>디스크 로터(Disc Rotor)</strong>: 휠과 함께 회전하는 주철 원판. 주행 중 고온 발생<br>② <strong>캘리퍼(Caliper)</strong>: 유압을 받아 패드를 로터에 압착하는 유압 실린더 어셈블리<br>③ <strong>브레이크 패드(Brake Pad)</strong>: 마찰재. 마모 시 교환 필요 (두께 기준 2~3mm 이하 교환)<br>④ <strong>캘리퍼 슬라이딩 핀</strong>: 캘리퍼가 좌우로 이동하여 고른 제동력 발생<br><br><strong>특징</strong><br>• 방열 우수 (노출형 구조) → 페이드(Fade) 현상에 강함<br>• 편마모 확인 쉬움<br>• 자기 배수(Self-cleaning) 기능<br>• 주차 브레이크로 단독 사용 시 복잡<br><br><strong>전·후륜 구분</strong>: 전륜에 주로 디스크(제동력의 70~80% 담당), 후륜은 디스크 또는 드럼',
+      info:'페이드(Fade): 브레이크 과열로 마찰력이 급격히 저하하는 현상. 디스크는 냉각이 빨라 드럼보다 내페이드성 우수.',
+      warn:'패드 두께 2mm 이하 시 즉시 교환! 금속끼리 마찰되면 로터까지 손상 (비용 대폭 증가).',
+      keyterms:[{name:'디스크 로터',def:'휠과 함께 회전하는 주철 원판'},{name:'캘리퍼',def:'유압으로 패드를 로터에 압착하는 장치'},{name:'브레이크 패드',def:'로터와 마찰하는 마찰재 (2mm 이하 교환)'},{name:'페이드',def:'브레이크 과열로 제동력 저하하는 현상'}]
+    }},
+    {title:'드럼 브레이크',done:false,content:{
+      title:'드럼 브레이크',
+      text:'<strong>드럼 브레이크(Drum Brake)</strong>는 차축과 함께 회전하는 드럼 내부에서 브레이크 슈가 벌어지며 드럼 내벽을 마찰시켜 제동력을 발생시키는 방식입니다.<br><br><strong>구성 부품</strong><br>① <strong>드럼(Drum)</strong>: 휠·차축과 함께 회전하는 원통형 주철 부품<br>② <strong>브레이크 슈(Brake Shoe)</strong>: 마찰재. 드럼 내벽에 압착<br>③ <strong>휠 실린더(Wheel Cylinder)</strong>: 브레이크 유압을 받아 슈를 외측으로 밀어냄<br>④ <strong>리턴 스프링</strong>: 제동 해제 시 슈를 원위치로 복귀<br>⑤ <strong>조정 나사(어저스터)</strong>: 슈와 드럼 간격 조정<br><br><strong>자기 배력(Self-energizing) 효과</strong>: 회전 방향의 마찰력이 슈를 더 강하게 드럼에 밀착시키는 효과 → 적은 유압으로 큰 제동력<br><br><strong>특징</strong><br>• 자기 배력 효과로 제동력 큼<br>• 방열 불량 (밀폐형) → 페이드 취약<br>• 구조 복잡, 자기 조정 어려움<br>• 후륜 및 주차 브레이크에 주로 사용',
+      info:'드럼 vs 디스크 비교: 드럼=자기배력O/방열X/주차브레이크적합, 디스크=자기배력X/방열O/내페이드성. 시험 자주 출제!',
+      warn:'드럼 브레이크는 빗물이나 오물이 내부에 고일 수 있어 정기 점검 필요. 제동 불균형 발생 시 양쪽 동시 교환.',
+      keyterms:[{name:'드럼',def:'차축과 함께 회전하는 원통형 주철 부품'},{name:'브레이크 슈',def:'드럼 내벽에 압착되는 마찰재'},{name:'휠 실린더',def:'유압을 받아 슈를 외측으로 밀어내는 실린더'},{name:'자기 배력',def:'마찰력이 슈를 더 강하게 밀착시키는 효과'}]
+    }},
+    {title:'ABS 원리',done:false,content:{
+      title:'ABS (Anti-lock Braking System)',
+      text:'<strong>ABS(잠김 방지 제동 시스템)</strong>는 급제동 시 바퀴가 완전히 잠기는 것을 방지하여 <strong>조향 능력을 유지</strong>하고 제동 안정성을 확보하는 시스템입니다.<br><br><strong>ABS 구성 부품</strong><br>① <strong>휠 스피드 센서(WSS)</strong>: 각 바퀴의 회전 속도를 실시간 감지<br>② <strong>ABS ECU(HECU)</strong>: 4개 바퀴 속도 비교 → 잠김 감지 시 유압 제어<br>③ <strong>하이드로릭 유닛(모듈레이터)</strong>: 유압을 증가·유지·감소 반복 제어 (1초에 수십 회)<br><br><strong>ABS 작동 원리</strong><br>급제동 → 바퀴 잠김 감지 → 유압 감소 → 바퀴 회전 회복 → 유압 재증가 → 반복<br>→ 결과: 바퀴가 굴러가는 상태에서 최대 제동력 + 조향 가능<br><br><strong>ABS의 제한</strong><br>• ABS가 제동 거리를 항상 단축시키는 것은 아님 (빙판, 자갈길은 오히려 길어질 수 있음)<br>• ABS 목적은 "제동 거리 단축"이 아닌 "조향 능력 유지"<br><br><strong>ABS 경고등</strong>: 시스템 이상 시 점등. 일반 브레이크는 작동하나 ABS 기능 상실',
+      info:'ABS의 핵심 목적 = 조향 능력 유지 (장애물 회피 가능). "제동 거리 단축"이 목적이 아님! 시험 빈출 오답 포인트!',
+      warn:'ABS 작동 시 브레이크 페달이 진동하는 느낌이 나는 것은 정상입니다. 절대 페달에서 발을 떼지 말고 강하게 밟으세요.',
+      keyterms:[{name:'휠 스피드 센서',def:'각 바퀴 회전속도 감지 — ABS 작동 판단 기준'},{name:'하이드로릭 유닛',def:'제동 유압을 증가·유지·감소 반복 제어'},{name:'ABS 목적',def:'바퀴 잠김 방지 → 조향 능력 유지 (제동 거리 단축 아님)'},{name:'ABS 경고등',def:'ABS 시스템 이상 감지 시 점등'}]
+    }},
+    {title:'파워스티어링',done:false,content:{
+      title:'파워스티어링',
+      text:'<strong>파워스티어링(Power Steering)</strong>은 운전자의 조향력을 보조하여 적은 힘으로 쉽게 조향할 수 있게 하는 시스템입니다.<br><br><strong>유압식 파워스티어링(HPAS)</strong><br>• 파워 스티어링 펌프(엔진 구동) → 파워 실린더에 유압 공급 → 조향력 보조<br>• 항상 펌프가 구동되어 연비 불리<br>• 오일 주기적 점검·교환 필요<br><br><strong>전동식 파워스티어링(MDPS/EPS)</strong><br>• 전기 모터로 직접 조향 보조<br>• 조향 필요 시에만 작동 → 연비 향상<br>• 오일 불필요, 구조 단순<br>• 현대 신차 대부분 채택<br><br><strong>조향 장치 구성</strong><br>스티어링 휠 → 스티어링 컬럼 → 스티어링 기어 박스 → 타이로드 → 너클 → 바퀴<br><br><strong>랙&피니언(Rack & Pinion) 방식</strong>: 소형차에 가장 많이 사용. 피니언 기어 회전 → 랙 바(직선 운동) → 좌우 바퀴 조향',
+      info:'MDPS(Motor Driven Power Steering) = EPS(Electric Power Steering). 전동식은 속도에 따라 보조력 자동 조절 (저속=가볍게, 고속=무겁게).',
+      warn:'파워 스티어링 오일 누유 시 조향 무거워짐 + 펌프 손상. 공회전 상태에서 핸들을 끝까지 돌린 상태 유지는 펌프 손상 원인!',
+      keyterms:[{name:'HPAS',def:'유압식 파워스티어링 — 엔진 구동 펌프로 유압 공급'},{name:'MDPS/EPS',def:'전동식 파워스티어링 — 전기 모터로 조향 보조'},{name:'랙&피니언',def:'피니언 회전을 랙 직선 운동으로 변환하는 조향 기어'},{name:'타이로드',def:'스티어링 기어와 너클을 연결하는 조향 링크'}]
+    }},
+  ]},
+  // ── CHAPTER 06 ──────────────────────────────────────────────
   {num:'06',title:'섀시 및 현가 장치',prog:0,status:'🔒 대기중',desc:'서스펜션 형식, 쇼크업소버, 스프링, 얼라이먼트 이론',
-   sections:[{title:'서스펜션 형식',done:false},{title:'스프링과 댐퍼',done:false},{title:'휠 얼라이먼트',done:false}],
-   content:{title:'섀시 및 현가 장치',subtitle:'CHAPTER 06',text:'<strong>현가 장치(서스펜션)</strong>는 노면의 충격을 흡수하여 승차감을 향상시키고 타이어의 접지력을 유지하는 장치입니다.<br><br>주요 형식: <strong>맥퍼슨 스트럿</strong>(소형차 전륜), <strong>더블 위시본</strong>(스포츠카), <strong>멀티링크</strong>(고급차 후륜).',keyterms:[{name:'쇼크업소버',def:'스프링 진동을 감쇠시키는 댐퍼'},{name:'코일 스프링',def:'충격 에너지를 저장했다가 서서히 방출'},{name:'토(Toe)',def:'타이어를 위에서 봤을 때 앞쪽이 모이면 토인(Toe-in)'},{name:'캠버',def:'타이어를 앞에서 봤을 때 기울기 각도'}],info:'얼라이먼트 항목(토, 캠버, 캐스터, 킹핀 경사각)은 시험에 매우 자주 출제됩니다!',warn:'얼라이먼트가 틀어지면 타이어가 편마모되고 연비도 악화됩니다.'}},
+   sections:[
+    {title:'서스펜션 형식',done:false,content:{
+      title:'서스펜션 형식',
+      text:'<strong>현가 장치(서스펜션, Suspension)</strong>는 차체와 차축 사이에서 노면 충격을 흡수하여 승차감을 향상시키고 타이어 접지력을 유지하는 장치입니다.<br><br><strong>독립 현가 방식 (Independent Suspension)</strong><br>• 좌우 바퀴가 독립적으로 움직임 → 승차감·조종성 우수<br>• <strong>맥퍼슨 스트럿</strong>: 구조 단순, 공간 효율 좋음 → 소형차 전륜에 가장 많이 사용<br>• <strong>더블 위시본</strong>: 상하 2개의 위시본 암 → 스포츠카, 고급차 전·후륜<br>• <strong>멀티링크</strong>: 여러 링크로 구성 → 고급차 후륜, 정밀한 기하학 제어<br><br><strong>일체 차축 방식 (Solid Axle / Beam Axle)</strong><br>• 좌우 바퀴가 하나의 차축으로 연결 → 한쪽 움직임이 반대쪽에 영향<br>• 구조 단순·내구성 우수 → 트럭, SUV 후륜에 사용<br>• <strong>리프 스프링 방식</strong>: 판 스프링을 직접 차축 지지에 사용. 트럭에 주로 사용',
+      info:'맥퍼슨 스트럿 = 소형차 전륜 (시험 최빈출!). 더블 위시본 = 스포츠카. 멀티링크 = 고급차 후륜.',
+      warn:'서스펜션 부품 파손(볼 조인트, 부싱 등) 시 조향 불안정 및 타이어 편마모 발생. 정기 점검 필수.',
+      keyterms:[{name:'맥퍼슨 스트럿',def:'쇼크업소버+스프링 일체형 — 소형차 전륜에 가장 일반적'},{name:'더블 위시본',def:'상하 2개 위시본 암 — 스포츠카·고급차'},{name:'멀티링크',def:'여러 링크 구성 — 고급차 후륜, 정밀 기하학 제어'},{name:'일체 차축',def:'좌우 바퀴가 하나의 차축으로 연결 — 트럭·SUV 후륜'}]
+    }},
+    {title:'스프링과 댐퍼',done:false,content:{
+      title:'스프링과 댐퍼',
+      text:'서스펜션은 <strong>스프링</strong>(충격 흡수)과 <strong>쇼크업소버</strong>(진동 감쇠)가 함께 작동합니다.<br><br><strong>스프링 종류</strong><br>① <strong>코일 스프링(Coil Spring)</strong>: 가장 일반적. 승용차 대부분 사용<br>② <strong>리프 스프링(Leaf Spring)</strong>: 판 스프링. 트럭·SUV 후륜<br>③ <strong>토션 바 스프링(Torsion Bar)</strong>: 비틀림 탄성 이용. 일부 소형차 전륜<br>④ <strong>에어 스프링</strong>: 공기 압력 이용. 버스·고급차<br><br><strong>쇼크업소버(Shock Absorber, 댐퍼)</strong><br>스프링이 충격을 흡수한 후 발생하는 <strong>잔진동을 감쇠</strong>시키는 장치입니다.<br>작동 원리: 피스톤이 오일 구멍을 통과하며 오일의 저항으로 운동 에너지를 열에너지로 변환<br><br><strong>스태빌라이저 바(Anti-roll Bar)</strong><br>코너링 시 차체 롤(기울어짐)을 억제하는 토션 바. 좌우 서스펜션을 연결.',
+      info:'스프링만 있으면 차가 계속 통통 튑니다. 쇼크업소버가 없으면 스프링이 흡수한 충격이 계속 진동으로 남아요.',
+      warn:'쇼크업소버 오일 누유 또는 마모 시 승차감 저하, 급제동·급선회 시 차체 불안정, 타이어 접지력 저하.',
+      keyterms:[{name:'코일 스프링',def:'나선형 스프링 — 승용차 대부분 사용'},{name:'쇼크업소버',def:'스프링 잔진동 감쇠 — 오일 저항으로 에너지 흡수'},{name:'스태빌라이저 바',def:'코너링 시 차체 롤 억제 — 좌우 서스펜션 연결'},{name:'리프 스프링',def:'판 스프링 — 트럭·SUV 후륜'}]
+    }},
+    {title:'휠 얼라이먼트',done:false,content:{
+      title:'휠 얼라이먼트',
+      text:'<strong>휠 얼라이먼트(Wheel Alignment)</strong>는 타이어와 차체의 기하학적 각도를 최적으로 맞추어 직진 안정성, 조향 복귀, 타이어 편마모를 방지하는 조정 작업입니다.<br><br><strong>얼라이먼트 4대 요소</strong><br><br>① <strong>토(Toe)</strong>: 타이어를 위에서 봤을 때 앞쪽이 안으로 모이면 <strong>토인(Toe-in)</strong>, 벌어지면 토아웃(Toe-out). 토인 → 직진 안정성 향상<br><br>② <strong>캠버(Camber)</strong>: 타이어를 앞에서 봤을 때 기울기 각도. 안쪽으로 기울면 네거티브 캠버(-), 바깥쪽 포지티브(+). 코너링 시 접지력 향상<br><br>③ <strong>캐스터(Caster)</strong>: 앞에서 킹핀 축이 앞뒤로 기울어진 각도. 포지티브 캐스터 → 핸들 복귀력·직진 안정성 향상<br><br>④ <strong>킹핀 경사각(KPI)</strong>: 킹핀 축이 수직에서 안쪽으로 기울어진 각도 → 조향력 감소, 직진 안정성<br><br><strong>얼라이먼트 틀어짐 원인</strong>: 과속 방지턱 충격, 차량 사고, 부품 마모<br><strong>증상</strong>: 핸들 쏠림, 타이어 편마모, 연비 저하',
+      info:'토·캠버·캐스터·킹핀 경사각 4가지 시험 필수! 토인 = 직진 안정성, 캐스터 = 핸들 복귀력 암기.',
+      warn:'얼라이먼트 이상 방치 시 타이어 편마모로 빠른 교체 필요. 앞바퀴 얼라이먼트는 사고 수리 후 반드시 점검!',
+      keyterms:[{name:'토인(Toe-in)',def:'타이어 앞쪽이 안으로 모인 상태 → 직진 안정성'},{name:'캠버',def:'타이어 기울기 각도 (앞에서 봤을 때)'},{name:'캐스터',def:'킹핀 축 앞뒤 기울기 → 핸들 복귀력·직진 안정성'},{name:'킹핀 경사각',def:'킹핀 축 안쪽 기울기 → 조향력 감소'}]
+    }},
+  ]},
+  // ── CHAPTER 07 ──────────────────────────────────────────────
   {num:'07',title:'전자제어 엔진 (EFI)',prog:0,status:'🔒 대기중',desc:'각종 센서 신호 처리, 연료 분사량 제어, 공연비 피드백',
-   sections:[{title:'EFI 시스템 개요',done:false},{title:'O2 센서',done:false},{title:'MAP/MAF 센서',done:false}],
-   content:{title:'전자제어 엔진 (EFI)',subtitle:'CHAPTER 07',text:'<strong>EFI(Electronic Fuel Injection)</strong>는 ECU가 각종 센서 신호를 받아 최적의 연료 분사량과 점화 타이밍을 전자적으로 제어하는 시스템입니다.',keyterms:[{name:'O2 센서',def:'배기가스의 산소 농도로 공연비를 피드백 제어'},{name:'MAP 센서',def:'흡기 매니폴드 절대 압력으로 흡입 공기량 측정'},{name:'MAF 센서',def:'직접 공기 질량 유량을 측정하는 센서'},{name:'TPS',def:'스로틀 포지션 센서 — 가속 페달 위치 감지'}],info:'공연비 14.7:1 (이론 공연비, 람다=1)은 시험 필수 암기!',warn:''}},
+   sections:[
+    {title:'EFI 시스템 개요',done:false,content:{
+      title:'EFI 시스템 개요',
+      text:'<strong>EFI(Electronic Fuel Injection, 전자 제어 연료 분사)</strong>는 ECU가 각종 센서 신호를 분석하여 최적의 연료 분사량과 점화 타이밍을 전자적으로 제어하는 시스템입니다.<br><br><strong>EFI 작동 흐름</strong><br>센서(공기량·수온·스로틀 개도 등) → ECU 입력 → ECU 연산 → 인젝터 개방 시간 제어 → 최적 연료 분사<br><br><strong>연료 분사량 결정 요소</strong><br>① 기본 분사량: 흡입 공기량(MAP/MAF) 기준<br>② 보정: 수온, TPS, 배터리 전압, O2 피드백<br><br><strong>인젝터 개방 시간(분사 펄스 폭)</strong>: ECU가 인젝터에 보내는 전기 신호 ON 시간. 길수록 연료량 증가<br><br><strong>분사 방식</strong><br>• 동시 분사: 모든 인젝터 동시에 분사<br>• 순차 분사(Sequential): 각 실린더 흡입 행정에 맞춰 순서대로 분사 → 현재 대부분<br><br><strong>공연비 제어</strong>: 이론 공연비(14.7:1, 람다=1)를 중심으로 O2 센서 피드백으로 정밀 제어',
+      info:'인젝터 분사 시간(펄스 폭) = 연료량. ECU가 공기량에 맞게 연료량 계산. 순차 분사가 동시 분사보다 연소 효율 우수.',
+      warn:'인젝터 막힘 또는 누설 시 시동 불량, 공회전 부조, 연비 저하 발생. 인젝터 클리너 주기적 사용 권장.',
+      keyterms:[{name:'EFI',def:'ECU가 센서 신호로 연료 분사량을 전자 제어하는 시스템'},{name:'분사 펄스 폭',def:'인젝터 개방 시간 — 길수록 연료 증가'},{name:'이론 공연비',def:'14.7:1 (람다=1) — 완전 연소를 위한 공기:연료 비율'},{name:'순차 분사',def:'각 실린더 흡입 행정에 맞춰 순서대로 분사'}]
+    }},
+    {title:'O2 센서',done:false,content:{
+      title:'O2 센서 (산소 센서)',
+      text:'<strong>O2 센서(산소 센서, 람다 센서)</strong>는 배기가스 내 산소 농도를 측정하여 ECU에 전달하고, ECU는 이 신호로 공연비를 이론값(14.7:1)에 가깝게 <strong>피드백 제어(Closed Loop Control)</strong>합니다.<br><br><strong>지르코니아(Zirconia) O2 센서</strong><br>• 원리: 배기가스와 대기 산소 농도 차이 → 기전력(전압) 발생<br>• 이론 공연비 기준: 농후(0.8~0.9V) ↔ 희박(0.1~0.2V)으로 진동<br>• 적정 작동 온도: 300°C 이상 (히터 내장형 사용)<br><br><strong>광역 O2 센서(Wide-band Lambda Sensor)</strong><br>• 전류값으로 정확한 공연비 수치 측정. 주로 전방(프리 O2 센서) 사용<br><br><strong>설치 위치</strong><br>• 전방 O2 센서(프리): 촉매 전방 — 공연비 피드백 제어<br>• 후방 O2 센서(포스트): 촉매 후방 — 촉매 변환 효율 모니터링<br><br><strong>고장 증상</strong>: O2 센서 불량 → 공연비 제어 불가 → 연비 저하, 배출가스 증가, 촉매 손상 가속',
+      info:'O2 센서는 300°C 이상에서 작동. 히터 내장으로 빠른 활성화. 전방=공연비 제어용, 후방=촉매 점검용 역할 구분 중요!',
+      warn:'O2 센서 오염(실리콘, 납) 시 영구 손상. 실리콘 함유 가스켓 실런트를 O2 센서 근처에 사용 금지!',
+      keyterms:[{name:'O2 센서',def:'배기가스 산소 농도 측정 → ECU 공연비 피드백 제어'},{name:'람다(λ)',def:'실제 공연비/이론 공연비. λ=1이 이론 공연비(14.7:1)'},{name:'피드백 제어',def:'O2 센서 신호로 연료량을 실시간 보정하는 Closed Loop'},{name:'전방/후방 O2',def:'전방=공연비 제어, 후방=촉매 효율 모니터링'}]
+    }},
+    {title:'MAP/MAF 센서',done:false,content:{
+      title:'MAP / MAF 센서',
+      text:'흡입 공기량 측정은 연료 분사량 결정의 핵심입니다. 측정 방식에 따라 MAP 방식과 MAF 방식으로 나뉩니다.<br><br><strong>MAP 센서(Manifold Absolute Pressure Sensor)</strong><br>• 흡기 매니폴드 절대 압력을 측정하여 공기량을 간접 계산<br>• 원리: 압력 낮음(강한 진공) = 부하 낮음, 압력 높음 = 부하 높음<br>• 스피드-덴시티(Speed-Density) 방식과 함께 사용<br>• 구조 단순, 비용 저렴<br><br><strong>MAF 센서(Mass Air Flow Sensor, 공기 질량 유량 센서)</strong><br>• 흡입 공기의 질량을 직접 측정<br>• 열선식(Hot Wire): 가는 열선에 공기가 지나가면 냉각 → 저항 변화 → 전압 신호<br>• 측정 정확도 높음 → 현재 대부분의 차량 사용<br><br><strong>비교</strong><br>MAP: 간접 측정, 구조 단순 / MAF: 직접 측정, 정확도 높음<br><br><strong>고장 증상</strong><br>MAP 불량: 공회전 불안정, 가속 불량<br>MAF 불량: 시동 불량, 과농 혼합기 → 흑연 매연',
+      info:'MAF 센서 오염(에어 클리너 과도한 오일 도포 등) 시 과농 신호 → 연료 과다 → 연비 급저하. MAF는 청소 가능 (전자부품 세정제).',
+      warn:'MAF 센서 탈거 후 재장착 시 방향 주의! 공기 흐름 방향 반대로 설치 시 역신호 발생.',
+      keyterms:[{name:'MAP 센서',def:'흡기 매니폴드 압력으로 공기량 간접 측정'},{name:'MAF 센서',def:'흡입 공기 질량 직접 측정 (열선식)'},{name:'스피드-덴시티',def:'MAP + 엔진 회전수로 공기량 계산하는 방식'},{name:'열선식',def:'열선의 냉각 정도로 공기 유량 측정'}]
+    }},
+  ]},
+  // ── CHAPTER 08 ──────────────────────────────────────────────
   {num:'08',title:'변속기 (MT/AT/CVT)',prog:0,status:'🔒 대기중',desc:'수동·자동·CVT 변속기 구조 및 동력 전달 원리',
-   sections:[{title:'수동변속기 구조',done:false},{title:'자동변속기 원리',done:false},{title:'CVT 벨트 방식',done:false}],
-   content:{title:'변속기 (MT/AT/CVT)',subtitle:'CHAPTER 08',text:'변속기는 엔진의 동력을 주행 상황에 맞게 토크와 속도를 변환하여 구동축으로 전달합니다.<br><br><strong>수동변속기(MT)</strong>: 클러치와 기어를 수동으로 조작. 구조 단순, 연비 우수.<br><strong>자동변속기(AT)</strong>: 토크 컨버터와 유성기어 세트로 자동 변속.<br><strong>CVT</strong>: 벨트와 풀리로 무단 변속, 부드러운 가속.',keyterms:[{name:'클러치',def:'엔진과 변속기 사이 동력 단속 장치'},{name:'토크 컨버터',def:'AT에서 유체를 이용한 동력 전달 및 증폭 장치'},{name:'유성기어',def:'AT의 핵심 — 선기어, 링기어, 유성기어, 캐리어'},{name:'CVT 풀리',def:'가변 직경 풀리로 무단 변속 구현'}],info:'토크 컨버터의 스톨 토크비(2.0~2.5:1)는 시험 빈출입니다!',warn:''}},
+   sections:[
+    {title:'수동변속기 구조',done:false,content:{
+      title:'수동변속기 (MT)',
+      text:'<strong>수동변속기(MT, Manual Transmission)</strong>는 운전자가 클러치와 변속 레버를 직접 조작하여 기어비를 변경하는 변속기입니다.<br><br><strong>클러치(Clutch)</strong><br>엔진 동력을 변속기에 연결·차단하는 장치. 변속 시 일시적으로 동력 차단<br>• <strong>클러치 디스크</strong>: 엔진과 변속기 사이 마찰 요소<br>• <strong>프레셔 플레이트</strong>: 스프링으로 클러치 디스크를 플라이휠에 압착<br>• <strong>클러치 베어링(릴리스 베어링)</strong>: 클러치 페달 밟을 때 작동하여 압착 해제<br><br><strong>변속기 기어 구조</strong><br>• 주축(Main Shaft)과 부축(Counter Shaft)의 기어 조합으로 다양한 기어비 형성<br>• 싱크로나이저(Synchronizer): 변속 시 기어 속도를 맞춰 기어 충격·소음 방지<br><br><strong>특징</strong><br>• 동력 전달 효율 높음 → 연비 우수<br>• 구조 단순, 수리 용이<br>• 운전자 숙련도 필요',
+      info:'싱크로나이저 마모 시 변속 시 기어 빠짐 또는 드등드등 소음 발생. 클러치 슬립은 클러치 마모 신호!',
+      warn:'클러치 끌기(반클러치 장시간 사용) 는 클러치 디스크를 빠르게 마모시킵니다. 정차 시에는 기어 중립 후 클러치 완전 해방!',
+      keyterms:[{name:'클러치',def:'엔진과 변속기 사이 동력 연결·차단 장치'},{name:'싱크로나이저',def:'변속 시 기어 속도 동기화 → 충격·소음 방지'},{name:'릴리스 베어링',def:'클러치 페달 조작 시 프레셔 플레이트 해방 역할'},{name:'기어비',def:'입력 기어와 출력 기어의 치수 비율 → 토크·속도 변환'}]
+    }},
+    {title:'자동변속기 원리',done:false,content:{
+      title:'자동변속기 (AT)',
+      text:'<strong>자동변속기(AT, Automatic Transmission)</strong>는 차속과 부하에 따라 자동으로 변속되는 변속기입니다. 클러치 페달이 없습니다.<br><br><strong>토크 컨버터(Torque Converter)</strong><br>AT에서 클러치 역할을 하며 유체(오일)를 이용하여 동력을 전달·증폭합니다.<br>• 펌프 임펠러: 엔진 측에 연결, 오일을 회전시킴<br>• 터빈: 변속기 측에 연결, 오일 흐름으로 회전<br>• 스테이터: 토크 증폭 역할<br>• <strong>스톨 토크비: 2.0~2.5:1</strong> (발진 시 토크 증폭)<br>• 록업 클러치: 고속 일정 주행 시 기계적 직결로 슬립 없앰 → 연비 향상<br><br><strong>유성기어 세트(Planetary Gear Set)</strong><br>선기어, 링기어, 유성기어, 캐리어 4가지 요소의 고정·입출력 조합으로 다양한 기어비 구현<br><br><strong>AT 오일(ATF, Automatic Transmission Fluid)</strong><br>변속기 윤활·냉각·유압 생성에 사용. 주기적 교환 필요 (약 4~6만km)',
+      info:'스톨 토크비 2.0~2.5:1 시험 빈출! 유성기어 구성요소(선기어·링기어·유성기어·캐리어) 4가지 암기.',
+      warn:'ATF 부족 또는 오염 시 변속 충격, 슬립, 변속기 소음 발생. ATF 색상이 검게 변하거나 탄내 나면 즉시 점검!',
+      keyterms:[{name:'토크 컨버터',def:'유체로 동력 전달·증폭 (스톨 토크비 2.0~2.5:1)'},{name:'유성기어',def:'선기어+링기어+유성기어+캐리어로 기어비 구현'},{name:'록업 클러치',def:'고속 직결 연결로 슬립 제거 → 연비 향상'},{name:'ATF',def:'자동변속기 오일 — 윤활·냉각·유압 동시 역할'}]
+    }},
+    {title:'CVT 벨트 방식',done:false,content:{
+      title:'CVT (무단 변속기)',
+      text:'<strong>CVT(Continuously Variable Transmission, 무단 변속기)</strong>는 기어 단계 없이 연속적으로 변속비를 변경하여 엔진을 항상 최적 RPM에서 작동시키는 변속기입니다.<br><br><strong>벨트식 CVT 작동 원리</strong><br>① 구동 풀리(Primary Pulley)와 피동 풀리(Secondary Pulley) 두 개의 <strong>가변 직경 풀리</strong><br>② 금속 벨트(또는 체인)로 두 풀리 연결<br>③ 풀리 폭이 변하면 벨트 접촉 반경이 변화 → 기어비 연속 변경<br><br><strong>예시</strong><br>• 구동 풀리 작아짐 + 피동 풀리 커짐 → 저속 (큰 토크)<br>• 구동 풀리 커짐 + 피동 풀리 작아짐 → 고속 (작은 토크)<br><br><strong>CVT 특징</strong><br>• 장점: 부드러운 가속, 연비 우수, 엔진 최적 회전수 유지<br>• 단점: 고토크 전달 한계, 가속 시 RPM만 오르는 느낌(러버밴드 현상), 수리비 비쌈<br><br><strong>DCT(Dual Clutch Transmission)</strong>: 2개의 클러치로 홀수·짝수 기어를 번갈아 미리 준비하여 변속 속도 최소화. 스포츠카·고성능차 사용',
+      info:'CVT = 기어 단수 없음, 연속 변속. "러버밴드 현상" = CVT 특성상 RPM은 높은데 가속감이 늦게 전달되는 느낌.',
+      warn:'CVT 오일(CVTF)은 일반 ATF와 다릅니다! 반드시 전용 CVTF 사용. 잘못된 오일 사용 시 변속기 파손!',
+      keyterms:[{name:'CVT',def:'기어 단계 없이 연속 변속비 조절 — 가변 풀리와 벨트'},{name:'가변 직경 풀리',def:'폭이 변해 벨트 접촉 반경 조절 → 기어비 변경'},{name:'러버밴드 현상',def:'CVT의 RPM↑ 대비 가속 반응 지연 느낌'},{name:'DCT',def:'이중 클러치 변속기 — 홀수/짝수 기어 동시 준비'}]
+    }},
+  ]},
 ];
 
 let wrongNotes = [];

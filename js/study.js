@@ -3,31 +3,49 @@
 //          markChapterStudied, markChapterQuizDone
 // ============================================================
 let ttsPlaying = false;
+let currentChapterIdx = 0;
 
 function showStudy(idx){
   showPage('study');
+  currentChapterIdx = idx;
   const ch=chapters[idx];
   document.getElementById('sidebar-chapter-title').textContent=`📖 ${ch.title}`;
+  renderSidebar(idx, 0);
+  renderSectionContent(idx, 0);
+}
+
+function renderSidebar(chIdx, activeIdx){
+  const ch=chapters[chIdx];
   document.getElementById('sidebar-sections').innerHTML=ch.sections.map((s,i)=>`
-    <div class="sidebar-item ${i===0?'active':''}" onclick="loadSection(this)">
+    <div class="sidebar-item ${i===activeIdx?'active':''}" onclick="loadSection(this,${chIdx},${i})">
       <span class="si-num">0${i+1}</span>${s.title}${s.done?'<span class="si-check">✓</span>':''}
     </div>
   `).join('');
-  renderStudyContent(ch);
 }
 
-function loadSection(el){
+function loadSection(el, chIdx, secIdx){
   document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
+  if(el) el.classList.add('active');
+  renderSectionContent(chIdx, secIdx);
 }
 
-function renderStudyContent(ch){
-  const c=ch.content;
-  const idx=chapters.indexOf(ch);
+function renderSectionContent(chIdx, secIdx){
+  const ch=chapters[chIdx];
+  const sec=ch.sections[secIdx];
+  const c=sec.content;
+  if(!c){
+    document.getElementById('study-content-area').innerHTML=`<div class="warn-box">콘텐츠 준비 중입니다.</div>`;
+    return;
+  }
   const ttsRaw=c.text.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+  window._ttsRaw=ttsRaw;
+  // 섹션 완료 표시
+  chapters[chIdx].sections[secIdx].done=true;
+  markChapterStudied(chIdx);
+
   document.getElementById('study-content-area').innerHTML=`
     <div class="study-title">${c.title}</div>
-    <div class="study-subtitle">${c.subtitle}</div>
+    <div class="study-subtitle">${ch.title} · SECTION 0${secIdx+1}</div>
     <div class="tts-bar">
       <button class="tts-btn" onclick="toggleTTS()"><span id="tts-icon">🔊</span><span id="tts-text">음성으로 듣기</span></button>
       <select class="tts-speed" id="tts-speed">
@@ -47,13 +65,15 @@ function renderStudyContent(ch){
       <div class="key-terms">${c.keyterms.map(t=>`<div class="key-term"><div class="kt-name">${t.name}</div><div class="kt-def">${t.def}</div></div>`).join('')}</div>
     `:''}
     <div class="study-actions">
-      <button class="btn btn-primary" onclick="startChapterQuiz(${idx})">⚡ 챕터 퀴즈 풀기</button>
+      <button class="btn btn-primary" onclick="startChapterQuiz(${chIdx})">⚡ 챕터 퀴즈 풀기</button>
       <button class="btn btn-ghost" onclick="showPage('ai')">🤖 AI에게 질문하기</button>
     </div>
   `;
-  window._ttsRaw=ttsRaw;
-  // 챕터 진도 업데이트
-  markChapterStudied(idx);
+}
+
+function renderStudyContent(ch){
+  const idx=chapters.indexOf(ch);
+  renderSectionContent(idx, 0);
 }
 
 function toggleTTS(){

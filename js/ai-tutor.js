@@ -1,10 +1,22 @@
 // ============================================================
-// AI TUTOR — Grok API chat
+// AI TUTOR — Groq API chat
 // ============================================================
 const conversationHistory = [];
 
+// URL 해시에서 API 키 자동 로드
+(function(){
+  const hash = window.location.hash;
+  const match = hash.match(/[#&]key=([^&]+)/);
+  if(match){
+    const key = decodeURIComponent(match[1]).replace(/[^\x20-\x7E]/g,'');
+    if(key) localStorage.setItem('grok_api_key', key);
+    // 키를 URL에서 제거 (보안)
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+  }
+})();
+
 function saveApiKey(){
-  const key=document.getElementById('api-key-input').value.trim();
+  const key=document.getElementById('api-key-input').value.trim().replace(/[^\x20-\x7E]/g,'');
   if(!key){alert('API 키를 입력해주세요!');return;}
   localStorage.setItem('grok_api_key',key);
   document.getElementById('api-key-modal').style.display='none';
@@ -28,11 +40,11 @@ async function sendChat(){
   conversationHistory.push({role:'user',content:msg});
   const typingId=addTyping();
   try{
-    const resp=await fetch('https://api.x.ai/v1/chat/completions',{
+    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
       body:JSON.stringify({
-        model:'grok-3',
+        model:'llama-3.3-70b-versatile',
         max_tokens:1200,
         messages:[
           {role:'system',content:`당신은 대한민국 자동차 정비 전문 AI 튜터입니다.
@@ -59,7 +71,7 @@ async function sendChat(){
       if(resp.status===401){localStorage.removeItem('grok_api_key');addMsg('⚠️ API 키가 올바르지 않습니다. 다시 입력해주세요.','ai');openApiModal();}
       else{addMsg(`❌ 오류 (${resp.status}). 잠시 후 다시 시도해주세요! 🔧`,'ai');}
     }
-  }catch(e){removeTyping(typingId);addMsg('🔌 네트워크 오류입니다. 인터넷 연결을 확인해주세요!','ai');}
+  }catch(e){removeTyping(typingId);addMsg('🔌 오류: '+e.message,'ai');}
   document.getElementById('chat-send-btn').disabled=false;
 }
 
@@ -82,3 +94,15 @@ function addTyping(){
 function removeTyping(id){const el=document.getElementById(id);if(el)el.remove();}
 
 function askQuick(text){document.getElementById('chat-input').value=text;sendChat();}
+
+function copyShareLink(){
+  const key=getApiKey();
+  if(!key){alert('먼저 API 키를 입력해주세요!');openApiModal();return;}
+  const base='https://hanalim-svg.github.io/marketing-study/autotech-academy.html';
+  const url=base+'#key='+encodeURIComponent(key);
+  navigator.clipboard.writeText(url).then(()=>{
+    addMsg('🔗 공유 링크가 클립보드에 복사됐어요! 링크를 받은 사람은 API 키 없이 바로 사용할 수 있어요.','ai');
+  }).catch(()=>{
+    prompt('아래 링크를 복사하세요:',url);
+  });
+}

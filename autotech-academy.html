@@ -346,12 +346,12 @@
 <!-- API KEY MODAL -->
 <div id="api-key-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--card);border:1px solid rgba(233,69,96,0.4);border-radius:14px;padding:30px;max-width:440px;width:100%">
-    <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">🔑 Grok API 키 입력</div>
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">🔑 Groq API 키 입력</div>
     <div style="font-size:13px;color:var(--txt2);line-height:1.7;margin-bottom:20px">
-      xAI 콘솔(<span style="color:var(--acc3)">console.x.ai</span>)에서 발급받은 API 키를 입력하세요.<br>
+      Groq 콘솔(<span style="color:var(--acc3)">console.groq.com</span>)에서 발급받은 API 키를 입력하세요.<br>
       키는 브라우저에만 저장되며 외부로 전송되지 않습니다.
     </div>
-    <input id="api-key-input" type="password" placeholder="xai-xxxxxxxxxxxxxxxxxxxxxxxx"
+    <input id="api-key-input" type="password" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxx"
       style="width:100%;background:var(--card2);border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:11px 14px;color:var(--txt);font-size:13px;font-family:var(--font-body);outline:none;margin-bottom:14px"
       onkeydown="if(event.key==='Enter')saveApiKey()" />
     <div style="display:flex;gap:10px;justify-content:flex-end">
@@ -368,15 +368,16 @@
       <div class="chat-header">
         <div class="ai-avatar">🤖</div>
         <div style="flex:1">
-          <div class="ai-name">정비사 AI 튜터 <span style="font-size:11px;color:var(--acc2);font-family:var(--font-body);font-weight:400;margin-left:6px">powered by Grok</span></div>
+          <div class="ai-name">정비사 AI 튜터 <span style="font-size:11px;color:var(--acc2);font-family:var(--font-body);font-weight:400;margin-left:6px">powered by Groq</span></div>
           <div class="ai-status"><span class="ai-dot"></span>온라인 · 언제든 질문하세요</div>
         </div>
+        <button onclick="copyShareLink()" style="background:rgba(0,210,255,0.1);border:1px solid rgba(0,210,255,0.3);border-radius:6px;color:var(--acc3);font-size:11px;padding:5px 10px;cursor:pointer;font-family:var(--font-body);white-space:nowrap;margin-right:6px">🔗 공유</button>
         <button onclick="openApiModal()" style="background:rgba(233,69,96,0.15);border:1px solid rgba(233,69,96,0.3);border-radius:6px;color:var(--acc);font-size:11px;padding:5px 10px;cursor:pointer;font-family:var(--font-body);white-space:nowrap">🔑 API 키</button>
       </div>
       <div class="chat-body" id="chat-body">
         <div class="msg">
           <div class="msg-ava">🤖</div>
-          <div class="msg-bubble">안녕하세요, 현규씨! 👋 저는 <strong>Grok AI</strong> 기반 자동차 정비 전문 튜터입니다.<br><br>엔진, 냉각, 전기, 섀시, 연료, 제동, 도장, 용접 등 자동차 정비에 관한 모든 것을 물어보세요! 🔧<br><br>💡 오른쪽 상단 <strong>🔑 API 키</strong> 버튼을 눌러 Grok API 키를 먼저 입력해주세요!</div>
+          <div class="msg-bubble">안녕하세요, 현규씨! 👋 저는 <strong>Groq AI</strong> 기반 자동차 정비 전문 튜터입니다.<br><br>엔진, 냉각, 전기, 섀시, 연료, 제동, 도장, 용접 등 자동차 정비에 관한 모든 것을 물어보세요! 🔧<br><br>💡 오른쪽 상단 <strong>🔑 API 키</strong> 버튼을 눌러 Groq API 키를 먼저 입력해주세요!</div>
         </div>
       </div>
       <div class="chat-input-area">
@@ -412,13 +413,13 @@
 
 </main>
 
-<script src="js/data.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/wrongnote.js"></script>
-<script src="js/ai-tutor.js"></script>
-<script src="js/study.js"></script>
-<script src="js/quiz.js"></script>
-<script src="js/exam.js"></script>
+<script src="js/data.js?v=3"></script>
+<script src="js/dashboard.js?v=3"></script>
+<script src="js/wrongnote.js?v=3"></script>
+<script src="js/ai-tutor.js?v=3"></script>
+<script src="js/study.js?v=3"></script>
+<script src="js/quiz.js?v=3"></script>
+<script src="js/exam.js?v=3"></script>
 <script>
 // INIT
 renderChapters();
