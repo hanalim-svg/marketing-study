@@ -8,7 +8,7 @@ function showPage(page){
   document.getElementById('nav-'+page).classList.add('active');
   if(page==='wrongnote')renderWrongNotes();
   if(page==='quiz')renderQuizSelectScreen();
-  if(page==='study'&&document.getElementById('study-content-area').innerHTML.trim()==='')showStudy(0);
+  if(page==='study'&&document.getElementById('study-content-area').innerHTML.trim()===''){renderSidebar(0,0);renderSectionContent(0,0);}
 }
 
 function renderChapters(){
